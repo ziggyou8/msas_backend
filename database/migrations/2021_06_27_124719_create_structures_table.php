@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSourceFinancementsTable extends Migration
+class CreateStructuresTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,14 @@ class CreateSourceFinancementsTable extends Migration
      */
     public function up()
     {
-        Schema::create('source_financements', function (Blueprint $table) {
+        Schema::create('structures', function (Blueprint $table) {
+            //$table->id();
             $table->increments('id');
             $table->string('denomination');
-            $table->unsignedInteger('structure_id');
-            $table->foreign('structure_id')->references('id')->on('structures')->onDelete('cascade');
+            $table->string('addresse_siege');
+            $table->string('telephone');
+            /* $table->unsignedInteger('source_financement_id');
+            $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade'); */
             $table->timestamps();
         });
     }
@@ -29,6 +32,6 @@ class CreateSourceFinancementsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('source_financements');
+        Schema::dropIfExists('structures');
     }
 }

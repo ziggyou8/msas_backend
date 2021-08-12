@@ -2,9 +2,10 @@
 
 namespace App\Http\Resources;
 
+use App\Models\SourceFinancement;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class SourceFinancementRessoure extends JsonResource
+class StructureResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -17,8 +18,10 @@ class SourceFinancementRessoure extends JsonResource
         return [
             'id' => $this->id,
             'denomination' => $this->denomination,
-            'structure_id' => $this->structure_id,
-            'acteurs' =>  $this->acteurs,
+            'addresse_siege' =>  $this->addresse_siege,
+            'telephone' =>  $this->telephone,
+            'source_financement' =>  SourceFinancement::with('acteurs')->where('id', $this->id)->get(),
+            //'type_acteurs' =>  $this->sourceFiancement->with('acteurs'),
         ];
     }
 }

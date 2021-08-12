@@ -2,13 +2,12 @@
 
 namespace App\Http\Controllers\API;
 
-use App\Http\Controllers\API\BaseController as BaseController;
-use App\Http\Resources\SourceFinancementRessoure;
-use App\Models\SourceFinancement;
-use App\Models\TypeActeur;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\StructureResource;
+use App\Models\Structure;
 use Illuminate\Http\Request;
 
-class SourceFinancementController extends BaseController
+class StructureController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -17,8 +16,8 @@ class SourceFinancementController extends BaseController
      */
     public function index()
     {
-        $financement = SourceFinancement::all();
-        return $this->sendResponse(SourceFinancementRessoure::collection($financement), 'succés.');
+        $structures = Structure::all();
+        return $this->sendResponse(StructureResource::collection($structures), 'succés.');
     }
 
     /**
@@ -39,19 +38,13 @@ class SourceFinancementController extends BaseController
      */
     public function store(Request $request)
     {
-        $sourceFinance = new SourceFinancement();
-        $sourceFinance->denomination  = $request->denomination;
-        $sourceFinance->structure_id  = $request->structure_id;
-        $sourceFinance->save();
+        $structurre = new Structure();
+        $structurre->denomination  = $request->denomination;
+        $structurre->addresse_siege  = $request->addresse_siege;
+        $structurre->telephone  = $request->telephone;
+        $structurre->save();
 
-        for ($i=0; $i < count($request->only('type_acteur')['type_acteur']); $i++) { 
-            $acteur = new TypeActeur();
-            $acteur->libelle = $request['type_acteur'][$i];
-            $acteur->source_financement_id = $sourceFinance->id;
-            $acteur->save();
-        }
-
-        return $this->sendResponse(new SourceFinancementRessoure($sourceFinance), 'Ajouté avec succés.');
+        return $this->sendResponse(new StructureResource($structurre), 'Ajouté avec succés.');
     }
 
     /**
@@ -96,8 +89,6 @@ class SourceFinancementController extends BaseController
      */
     public function destroy($id)
     {
-        $financement = SourceFinancement::find($id);
-        $financement->delete();
-        return $this->sendResponse([], 'Supprimé avec succés.');
+        //
     }
 }

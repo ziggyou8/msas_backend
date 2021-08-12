@@ -9,10 +9,15 @@ class SourceFinancement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['denomination'];
+    protected $fillable = ['denomination', 'structure_id'];
 
     public function acteurs()
     {
         return $this->hasMany(TypeActeur::class);
+    }
+
+    public function structure()
+    {
+        return $this->hasOne(Structure::class);
     }
 }

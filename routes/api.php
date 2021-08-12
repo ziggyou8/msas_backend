@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\SourceFinancementController;
+use App\Http\Controllers\API\StructureController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +33,9 @@ Route::middleware('auth:api')->group( function () {
     Route::post('/financements',[SourceFinancementController::class, 'store']);
     Route::get('/financements',[SourceFinancementController::class, 'index']);
     Route::delete('/financements/{id}',[SourceFinancementController::class, 'destroy']);
+
+    Route::get('/structures',[StructureController::class, 'index']);
+    Route::post('/structures',[StructureController::class, 'store']);
 
 });
 
