@@ -7,10 +7,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
+/**
+ * @OA\Schema(
+ *     title="User",
+ *     description="User model",
+ *     @OA\Xml(
+ *         name="User"
+ *     )
+ * )
+ */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasApiTokens;
+    use HasFactory, Notifiable, HasApiTokens, HasRoles;
     
 
     /**
@@ -19,7 +29,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nom_complet',
+        'photo',
+        'prenom',
+        'nom',
         'telephone',
         'email',
         'password',
@@ -43,4 +55,53 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+    * @OA\Property(
+    *      property="id", 
+    *      type="integer", 
+    *  ),
+
+    * @OA\Property(
+    *      property="photo",
+    *      type="string",
+    * ),
+
+    * @OA\Property(
+    *      property="prenom", 
+    *      type="string",  
+    *  ),
+
+     * @OA\Property(
+     *      property="nom",
+     *      type="string", 
+     * ),
+     * 
+     * @OA\Property(
+     *      property="telephone",
+     *      type="string", 
+     * ),
+     * 
+     * @OA\Property(
+     *      property="email",
+     *      type="string", 
+     * ),
+     * 
+     * @OA\Property(
+     *      property="roles[]", 
+     *      
+     *      type="array",@OA\Items(type="string"),
+     *  ),
+     * 
+     * @OA\Property(
+     *      property="password",
+     *      type="string",
+     * ),
+     * 
+     * @OA\Property(
+     *      property="c_password",
+     *      type="string",
+     * ),
+     * 
+     */
 }

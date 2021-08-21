@@ -41,7 +41,7 @@ class SourceFinancementController extends BaseController
     {
         $sourceFinance = new SourceFinancement();
         $sourceFinance->denomination  = $request->denomination;
-        $sourceFinance->structure_id  = $request->structure_id;
+        /* $sourceFinance->structure_id  = $request->structure_id; */
         $sourceFinance->save();
 
         for ($i=0; $i < count($request->only('type_acteur')['type_acteur']); $i++) { 

@@ -3,8 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Spatie\Permission\Models\Role;
 
-class SourceFinancementRessoure extends JsonResource
+class RoleResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,9 +17,8 @@ class SourceFinancementRessoure extends JsonResource
     {
         return [
             'id' => $this->id,
-            'denomination' => $this->denomination,
-            /* 'structure_id' => $this->structure_id, */
-            'acteurs' =>  $this->acteurs,
+            'name' => $this->name,
+            'permissions'=> $this->permissions->pluck('name')
         ];
     }
 }

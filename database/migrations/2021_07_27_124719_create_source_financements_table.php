@@ -16,8 +16,8 @@ class CreateSourceFinancementsTable extends Migration
         Schema::create('source_financements', function (Blueprint $table) {
             $table->increments('id');
             $table->string('denomination');
-            $table->unsignedInteger('structure_id');
-            $table->foreign('structure_id')->references('id')->on('structures')->onDelete('cascade');
+            /* $table->unsignedInteger('structure_id');
+            $table->foreign('structure_id')->references('id')->on('structures')->onDelete('cascade'); */
             $table->timestamps();
         });
     }

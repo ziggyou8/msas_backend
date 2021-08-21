@@ -1,14 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\API;
+
+use App\Http\Controllers\Controller;
+use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
-use App\Http\Controllers\API\BaseController as BaseController;
-use App\Http\Resources\UserRessource;
-use App\Models\User;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
-class UserController extends BaseController
+class RoleController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -16,18 +16,18 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-     /**
+    /**
      * @OA\Get(
-     ** path="/v1/users",
-     *   tags={"Users"},
-     *   summary="List Users ",
-     *   operationId="List Users",
+     ** path="/v1/roles",
+     *   tags={"Roles"},
+     *   summary="List Roles ",
+     *   operationId="List Roles",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/Users"),
+     *      @OA\Property(ref="#/components/schemas/Role"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -50,13 +50,10 @@ class UserController extends BaseController
      *      )
      *)
      **/
-
     public function index()
     {
-        //$users = User::all();
-        $users = User::whereDoesntHave('admin')->get();
-    
-        return $this->sendResponse(UserRessource::collection($users), 'succés.');
+        $roles = Role::orderBy('id','DESC')->get();
+        return $this->sendResponse(RoleResource::collection($roles), 'succés.');
     }
 
 
@@ -67,62 +64,29 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-    /**
+     /**
      * @OA\Post(
-     ** path="/v1/users",
-     *   tags={"Users"},
-     *   summary="Create User",
-     *   operationId="create User",
+     ** path="/v1/roles",
+     *   tags={"Roles"},
+     *   summary="Create Role",
+     *   operationId="create Role",
      *   security={{"bearerAuth": {}}},
      *
      *  @OA\Parameter(
-     *      name="prenom",
-     *      in="query",
-     *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     * 
-     * @OA\Parameter(
      *      name="nom",
      *      in="query",
-     *      required=true, 
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="telephone",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *       name="email",
-     *      in="query",
      *      required=true,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="photo",
-     *      in="query",
-     *      required=false,
      *      @OA\Schema(
      *           type="string"
      *      )
      *   ),
      * 
      *  @OA\Parameter(
-     *      name="roles[]",
+     *      name="permission_id[]",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="string"),
+     *          type="array",@OA\Items(type="integer"),
      *      )
      *   ),
      * 
@@ -153,24 +117,17 @@ class UserController extends BaseController
      */
     public function store(Request $request)
     {
-        $input = $request->all();
-        $input['password'] = bcrypt("passer");
+        /* $this->validate($request, [
+            'name' => 'required|unique:roles,name',
+            'permission_id' => 'required',
+        ]); */
+    
+        $role = Role::create(['name' => $request->input('nom')]);
+        
+        $role->syncPermissions($request->only('permission_id'));
 
-        $validator = Validator::make($input, [
-            'prenom' => 'required',
-            'nom' => 'required',
-            'email' => 'required'
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
-        }
-   
-        $user = User::create($input);
-        $roles = $request->only('roles');
-        $user->assignRole($roles);
-   
-        return $this->sendResponse(new UserRessource($user), 'Utilisateur ajouté avec succés.');
+        return $this->sendResponse(new RoleResource($role), 'Role ajouté avec succés.');
+        
     }
 
     /**
@@ -180,12 +137,12 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-    /**
+     /**
      * @OA\Get(
-     ** path="/v1/users/{id}",
-     *   tags={"Users"},
-     *   summary="Detail User",
-     *   operationId="User Detail",
+     ** path="/v1/roles/{id}",
+     *   tags={"Roles"},
+     *   summary="Detail Role",
+     *   operationId="Role Detail",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Parameter(
@@ -200,7 +157,7 @@ class UserController extends BaseController
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/User"),
+     *      @OA\Property(ref="#/components/schemas/Role"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -225,13 +182,12 @@ class UserController extends BaseController
      **/
     public function show($id)
     {
-        $user = User::find($id);
-        if (!is_null($user)) {
-            return $this->sendResponse(new UserRessource($user), 'succés.');
+        $role = Role::find($id);
+        if (!is_null($role)) {
+            return $this->sendResponse(new RoleResource($role), 'succés.');
           } else {
-            return $this->sendError('Cet utilisateur n\'existe pas');
+            return $this->sendError('Ce role n\'existe pas');
           }
-      
     }
 
     /**
@@ -253,59 +209,26 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-     /**
+      /**
      * @OA\Put(
-     ** path="/v1/users/{id}",
-     *   tags={"Users"},
-     *   summary="Update User",
-     *   operationId="Update User",
+     ** path="/v1/roles/{id}",
+     *   tags={"Roles"},
+     *   summary="Edit Role",
+     *   operationId="Edit Role",
      *   security={{"bearerAuth": {}}},
      *
-     *  @OA\Parameter(
+    *   @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
      *           type="integer"
      *      )
-     * ),
+     *  ),
      * 
      *  @OA\Parameter(
-     *      name="prenom",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     * 
-     * @OA\Parameter(
      *      name="nom",
      *      in="query",
-     *      required=false, 
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *  @OA\Parameter(
-     *      name="telephone",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *       name="email",
-     *      in="query",
-     *      required=false,
-     *      @OA\Schema(
-     *           type="string"
-     *      )
-     *   ),
-     *   @OA\Parameter(
-     *      name="photo",
-     *      in="query",
      *      required=false,
      *      @OA\Schema(
      *           type="string"
@@ -313,11 +236,11 @@ class UserController extends BaseController
      *   ),
      * 
      *  @OA\Parameter(
-     *      name="roles[]",
+     *      name="permission_id[]",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="string"),
+     *          type="array",@OA\Items(type="integer"),
      *      )
      *   ),
      * 
@@ -346,18 +269,23 @@ class UserController extends BaseController
      *      )
      *)
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
-        $user = User::find($id);
-        $input = $request->all();
-        $user->photo =  $request->photo ? $request->photo : $user->photo;
-        $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
-        $user->nom =  $request->nom ? $request->nom : $user->nom;
-        $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
-        $user->email = $request->email ? $request->email : $user->email;
-        $user->password = $request->password ? bcrypt($request->password ) : $user->password;
-        $user->save();
-        return $this->sendResponse(new UserRessource($user), 'succés.');
+        /* $this->validate($request, [
+            'nom' => 'required',
+            'permission' => 'required',
+        ]); */
+        
+        $role = Role::find($id);
+        if (is_null($role)) {
+            return $this->sendError('Ce role n\'existe pas');
+          } 
+        $role->name =  $request->input('nom') ? $request->input('nom'): $role->name;
+        $role->save();
+        $role->syncPermissions($request->input('permission_id'));
+
+        return $this->sendResponse(new RoleResource($role), 'Role Modifié avec succés.');
+
     }
 
     /**
@@ -369,10 +297,10 @@ class UserController extends BaseController
 
      /**
      * @OA\Delete(
-     ** path="/v1/users/{id}",
-     *   tags={"Users"},
-     *   summary="Delete User",
-     *   operationId="delete User",
+     ** path="/v1/roles/{id}",
+     *   tags={"Roles"},
+     *   summary="Delete Role",
+     *   operationId="delete Role",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Parameter(
@@ -387,7 +315,7 @@ class UserController extends BaseController
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/User"),
+     *      @OA\Property(ref="#/components/schemas/Role"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -412,47 +340,11 @@ class UserController extends BaseController
      **/
     public function destroy($id)
     {
-        $user = User::find($id);
-        $user->delete();
-        return $this->sendResponse([], 'Utilisateur supprimé avec succés.');
-    }
-
-    /**
-     * @OA\Get(
-     ** path="/v1/user",
-     *   tags={"Users"},
-     *   summary="Get CurrentUser",
-     *   operationId="Get Current User",
-     *  security={{"bearerAuth": {}}},
-     *
-     *
-     *   @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/User"),
-     *      @OA\MediaType(
-     *           mediaType="application/json",
-     *      )
-     *   ),
-     *   @OA\Response(
-     *      response=401,
-     *      description="Unauthenticated"
-     *   ),
-     *   @OA\Response(
-     *      response=400,
-     *      description="Bad Request"
-     *   ),
-     *   @OA\Response(
-     *      response=404,
-     *      description="not found"
-     *   ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     *)
-     **/
-    public function get_current_user(Request $request){
-        return $this->sendResponse(new UserRessource($request->user()), 'succés.');
+        $role = Role::find($id);
+        if (is_null($role)) {
+            return $this->sendError('Ce role n\'existe pas');
+          } 
+        $role->delete();
+        return $this->sendResponse([], 'Role supprimé avec succés.');
     }
 }

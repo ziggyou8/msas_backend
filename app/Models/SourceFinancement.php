@@ -9,7 +9,7 @@ class SourceFinancement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['denomination', 'structure_id'];
+    protected $fillable = ['denomination'/* , 'structure_id' */];
 
     public function acteurs()
     {
@@ -18,6 +18,6 @@ class SourceFinancement extends Model
 
     public function structure()
     {
-        return $this->hasOne(Structure::class);
+        return $this->belongsTo(Structure::class);
     }
 }

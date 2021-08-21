@@ -9,6 +9,10 @@ use Illuminate\Http\Request;
 
 class StructureController extends BaseController
 {
+    function __construct()
+    {
+         $this->middleware('permission:structure-list|structure-create', ['only' => ['index','store']]);
+    }
     /**
      * Display a listing of the resource.
      *
@@ -41,6 +45,7 @@ class StructureController extends BaseController
         $structurre = new Structure();
         $structurre->denomination  = $request->denomination;
         $structurre->addresse_siege  = $request->addresse_siege;
+        $structurre->source_financement_id  = $request->source_financement_id;
         $structurre->telephone  = $request->telephone;
         $structurre->save();
 

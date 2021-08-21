@@ -20,7 +20,8 @@ class StructureResource extends JsonResource
             'denomination' => $this->denomination,
             'addresse_siege' =>  $this->addresse_siege,
             'telephone' =>  $this->telephone,
-            'source_financement' =>  SourceFinancement::with('acteurs')->where('id', $this->id)->get(),
+            'source_financement' => SourceFinancement::with('acteurs')->where('id',$this->id)->get(),
+            //'source_financement' =>  SourceFinancement::with('acteurs')->where('id', $this->id)->get(),
             //'type_acteurs' =>  $this->sourceFiancement->with('acteurs'),
         ];
     }

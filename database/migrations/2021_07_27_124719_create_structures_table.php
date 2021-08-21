@@ -19,8 +19,8 @@ class CreateStructuresTable extends Migration
             $table->string('denomination');
             $table->string('addresse_siege');
             $table->string('telephone');
-            /* $table->unsignedInteger('source_financement_id');
-            $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade'); */
+            $table->unsignedInteger('source_financement_id');
+            $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade');
             $table->timestamps();
         });
     }
