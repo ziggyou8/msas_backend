@@ -23,7 +23,7 @@ class Controller extends BaseController
      * )
      *
      * @OA\Server(
-     *      url=L5_SWAGGER_CONST_HOST,
+     *      url=https://warm-dawn-63774.herokuapp.com/api,
      *      description="MSAS API Server"
      * )
      * 
