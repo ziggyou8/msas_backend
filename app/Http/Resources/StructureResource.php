@@ -19,8 +19,16 @@ class StructureResource extends JsonResource
             'id' => $this->id,
             'denomination' => $this->denomination,
             'addresse_siege' =>  $this->addresse_siege,
+            'type_fonds' =>  $this->type_fonds,
             'telephone' =>  $this->telephone,
-            'source_financement' => SourceFinancement::with('acteurs')->where('id',$this->id)->get(),
+            'prenom_personne_responsable' =>  [
+                $this->prenom_personne_responsable,
+                $this->nom_personne_responsable,
+                $this->email_personne_responsable,
+                $this->telephone_personne_responsable,
+            ], 
+            'source_financement' => $this->sourceFiancement,
+            //'source_financement' => SourceFinancement::where('id',$this->source_financement_id)->pluck('denomination')->first(),
             //'source_financement' =>  SourceFinancement::with('acteurs')->where('id', $this->id)->get(),
             //'type_acteurs' =>  $this->sourceFiancement->with('acteurs'),
         ];

@@ -27,7 +27,7 @@ class UserController extends BaseController
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/Users"),
+     *      @OA\Property(ref="#/components/schemas/User"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -114,6 +114,13 @@ class UserController extends BaseController
      *      required=false,
      *      @OA\Schema(
      *           type="string"
+     *      )
+     *   ),
+     *    @OA\Parameter(
+     *      name="structure_id",
+     *      in="query",
+     *      @OA\Schema(
+     *           type="integer"
      *      )
      *   ),
      * 
@@ -264,7 +271,7 @@ class UserController extends BaseController
      *  @OA\Parameter(
      *      name="id",
      *      in="path",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
      *           type="integer"
      *      )
@@ -311,6 +318,13 @@ class UserController extends BaseController
      *           type="string"
      *      )
      *   ),
+     *  @OA\Parameter(
+     *      name="structure_id",
+     *      in="query",
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
      * 
      *  @OA\Parameter(
      *      name="roles[]",
@@ -349,10 +363,10 @@ class UserController extends BaseController
     public function update(Request $request,$id)
     {
         $user = User::find($id);
-        $input = $request->all();
         $user->photo =  $request->photo ? $request->photo : $user->photo;
         $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
         $user->nom =  $request->nom ? $request->nom : $user->nom;
+        $user->structure_id =  $request->structure_id ? $request->structure_id : $user->structure_id;
         $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
         $user->email = $request->email ? $request->email : $user->email;
         $user->password = $request->password ? bcrypt($request->password ) : $user->password;

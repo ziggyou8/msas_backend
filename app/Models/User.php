@@ -35,6 +35,7 @@ class User extends Authenticatable
         'telephone',
         'email',
         'password',
+        'structure_id'
     ];
 
     /**
@@ -85,6 +86,10 @@ class User extends Authenticatable
      * @OA\Property(
      *      property="email",
      *      type="string", 
+     * ),
+     * @OA\Property(
+     *      property="structure_id",
+     *      type="integer", 
      * ),
      * 
      * @OA\Property(

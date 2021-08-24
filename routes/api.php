@@ -40,12 +40,16 @@ Route::middleware('auth:api')->group( function () {
     Route::post('v1/users',[UserController::class, 'store'] );
     Route::delete('v1/users/{id}',[UserController::class, 'destroy']);
 
-    Route::post('/financements',[SourceFinancementController::class, 'store']);
-    Route::get('/financements',[SourceFinancementController::class, 'index']);
-    Route::delete('/financements/{id}',[SourceFinancementController::class, 'destroy']);
+    Route::post('v1/financements',[SourceFinancementController::class, 'store']);
+    Route::get('v1/financements',[SourceFinancementController::class, 'index']);
+    Route::put('v1/financements/{id}',[SourceFinancementController::class, 'update']);
+    Route::delete('v1/financements/{id}',[SourceFinancementController::class, 'destroy']);
 
-    Route::get('/structures',[StructureController::class, 'index']);
-    Route::post('/structures',[StructureController::class, 'store']);
+    Route::get('v1/structures',[StructureController::class, 'index']);
+    Route::post('v1/structures',[StructureController::class, 'store']);
+    Route::get('v1/structures/{id}',[StructureController::class, 'show']);
+    Route::put('v1/structures/{id}',[StructureController::class, 'update']);
+    Route::delete('v1/structures/{id}',[StructureController::class, 'destroy']);
 
     Route::get('v1/roles',[RoleController::class, 'index']);
     Route::get('v1/roles/{id}',[RoleController::class, 'show']);

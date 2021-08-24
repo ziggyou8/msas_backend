@@ -17,9 +17,14 @@ class CreateStructuresTable extends Migration
             //$table->id();
             $table->increments('id');
             $table->string('denomination');
+            $table->string('type_fonds');
             $table->string('addresse_siege');
             $table->string('telephone');
-            $table->unsignedInteger('source_financement_id');
+            $table->string('prenom_personne_responsable')->nullable();;
+            $table->string('nom_personne_responsable')->nullable();;
+            $table->string('telephone_personne_responsable')->nullable();;
+            $table->string('email_personne_responsable')->nullable();;
+            $table->unsignedInteger('source_financement_id')->nullable();
             $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade');
             $table->timestamps();
         });
