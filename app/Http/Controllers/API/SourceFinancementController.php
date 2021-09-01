@@ -149,9 +149,58 @@ class SourceFinancementController extends BaseController
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
+     /**
+     * @OA\Get(
+     ** path="/v1/financements/{id}",
+     *   tags={"SourceFinancements"},
+     *   summary="Detail SourceFinancement",
+     *   operationId="SourceFinancement Detail",
+     *  security={{"bearerAuth": {}}},
+     *
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\Property(ref="#/components/schemas/SourceFinancement"),
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *   @OA\Response(
+     *      response=401,
+     *      description="Unauthenticated"
+     *   ),
+     *   @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     *   @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     *)
+     **/
     public function show($id)
     {
-        //
+        $financement = SourceFinancement::find($id);
+        if (!is_null($financement)) {
+            return $this->sendResponse(new SourceFinancementRessoure($financement), 'succés.');
+          } else {
+            return $this->sendError('Ce financement n\'existe pas');
+          }
     }
 
     /**

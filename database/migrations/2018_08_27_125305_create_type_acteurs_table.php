@@ -14,7 +14,7 @@ class CreateTypeActeursTable extends Migration
     public function up()
     {
         Schema::create('type_acteurs', function (Blueprint $table) {
-            $table->id(); 
+            $table->increments('id');
             $table->string('libelle');
             $table->unsignedInteger('source_financement_id');
             $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade');

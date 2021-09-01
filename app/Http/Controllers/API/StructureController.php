@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\StructureResource;
 use App\Models\Structure;
 use Illuminate\Http\Request;
@@ -152,6 +153,13 @@ class StructureController extends BaseController
      *           type="integer"
      *      )
      *   ),
+     *   @OA\Parameter(
+     *      name="type_acteur_id",
+     *      in="query",
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
      * 
      * 
      *   @OA\Response(
@@ -183,10 +191,12 @@ class StructureController extends BaseController
     {
         $structurre = new Structure();
         $structurre->denomination  = $request->denomination;
+        $structurre->logo  = $request->logo;
         $structurre->type_fonds  = $request->type_fonds;
         $structurre->telephone  = $request->telephone;
         $structurre->addresse_siege  = $request->addresse_siege;
         $structurre->source_financement_id  = $request->source_financement_id;
+        $structurre->type_acteur_id  = $request->type_acteur_id;
         $structurre->prenom_personne_responsable  = $request->prenom_personne_responsable;
         $structurre->nom_personne_responsable  = $request->nom_personne_responsable;
         $structurre->telephone_personne_responsable  = $request->telephone_personne_responsable;
@@ -336,6 +346,13 @@ class StructureController extends BaseController
      *           type="string"
      *      )
      *   ),
+     *   @OA\Parameter(
+     *      name="type_acteur_id",
+     *      in="query",
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
      *  @OA\Parameter(
      *      name="email_personne_responsable",
      *      in="query",
@@ -388,15 +405,16 @@ class StructureController extends BaseController
     {
         $structurre = Structure::find($id);
         $structurre->denomination  = $request->denomination ? $request->denomination :$structurre->denomination;
+        $structurre->logo  = $request->logo ? $request->logo :$structurre->logo;
         $structurre->type_fonds  = $request->type_fonds ? $request->type_fonds :$structurre->type_fonds;
         $structurre->telephone  = $request->telephone ? $request->telephone :$structurre->telephone;
         $structurre->addresse_siege  = $request->addresse_siege ? $request->addresse_siege :$structurre->addresse_siege;
         $structurre->source_financement_id  = $request->source_financement_id ? $request->source_financement_id :$structurre->source_financement_id;
+        $structurre->type_acteur_id  = $request->type_acteur_id ? $request->type_acteur_id :$structurre->type_acteur_id;
         $structurre->prenom_personne_responsable  = $request->prenom_personne_responsable ? $request->prenom_personne_responsable :$structurre->prenom_personne_responsable;
         $structurre->nom_personne_responsable  = $request->nom_personne_responsable ? $request->nom_personne_responsable :$structurre->nom_personne_responsable;
         $structurre->telephone_personne_responsable  = $request->telephone_personne_responsable ? $request->telephone_personne_responsable :$structurre->telephone_personne_responsable;
         $structurre->email_personne_responsable  = $request->email_personne_responsable ? $request->email_personne_responsable :$structurre->email_personne_responsable;
-        $structurre->denomination  = $request->denomination ? $request->denomination :$structurre->denomination;
         $structurre->save();
 
         return $this->sendResponse(new StructureResource($structurre), 'succés.');
