@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\RoleResource;
+use App\Http\Resources\TypeActeurResource;
+use App\Models\TypeActeur;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Spatie\Permission\Models\Role;
+use App\Http\Controllers\API\BaseController as BaseController;
 
-class RoleController extends BaseController
+class TypeActeurController extends BaseController
 {
     /**
      * Display a listing of the resource.
@@ -18,16 +18,16 @@ class RoleController extends BaseController
 
     /**
      * @OA\Get(
-     ** path="/v1/roles",
-     *   tags={"Roles"},
-     *   summary="List Roles ",
-     *   operationId="List Roles",
+     ** path="/v1/acteurs",
+     *   tags={"Acteur"},
+     *   summary="List Acteurs ",
+     *   operationId="List Acteurs",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/Role"),
+     *      @OA\Property(ref="#/components/schemas/Acteur"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -52,8 +52,8 @@ class RoleController extends BaseController
      **/
     public function index()
     {
-        $roles = Role::orderBy('id','DESC')->get();
-        return $this->sendResponse(RoleResource::collection($roles), 'succés.');
+        $acteurs = TypeActeur::orderBy('id','DESC')->get();
+        return $this->sendResponse(TypeActeurResource::collection($acteurs), 'succés.');
     }
 
 
@@ -66,14 +66,14 @@ class RoleController extends BaseController
 
      /**
      * @OA\Post(
-     ** path="/v1/roles",
-     *   tags={"Roles"},
-     *   summary="Create Role",
-     *   operationId="create Role",
+     ** path="/v1/acteurs",
+     *   tags={"Acteur"},
+     *   summary="Create Acteur",
+     *   operationId="create Acteur",
      *   security={{"bearerAuth": {}}},
      *
      *  @OA\Parameter(
-     *      name="nom",
+     *      name="libelle",
      *      in="query",
      *      required=true,
      *      @OA\Schema(
@@ -81,12 +81,12 @@ class RoleController extends BaseController
      *      )
      *   ),
      * 
-     *  @OA\Parameter(
-     *      name="permission_id[]",
+     *   @OA\Parameter(
+     *      name="source_financement_id",
      *      in="query",
-     *      required=false,
+     *      required=true,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="integer"),
+     *           type="integer"
      *      )
      *   ),
      * 
@@ -122,11 +122,12 @@ class RoleController extends BaseController
             'permission_id' => 'required',
         ]); */
     
-        $role = Role::create(['name' => $request->input('name')]);
-        
-        $role->syncPermissions($request->only('permission_id'));
+        $acteur = TypeActeur::create([
+            'libelle' => $request->input('libelle'),
+            'source_financement_id' => $request->input('source_financement_id')
+        ]);
 
-        return $this->sendResponse(new RoleResource($role), 'Role ajouté avec succés.');
+        return $this->sendResponse(new TypeActeurResource($acteur), 'Role ajouté avec succés.');
         
     }
 
@@ -139,10 +140,10 @@ class RoleController extends BaseController
 
      /**
      * @OA\Get(
-     ** path="/v1/roles/{id}",
-     *   tags={"Roles"},
-     *   summary="Detail Role",
-     *   operationId="Role Detail",
+     ** path="/v1/acteurs/{id}",
+     *   tags={"Acteur"},
+     *   summary="Detail Acteur",
+     *   operationId="Acteur Detail",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Parameter(
@@ -157,7 +158,7 @@ class RoleController extends BaseController
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/Role"),
+     *      @OA\Property(ref="#/components/schemas/Acteur"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -182,11 +183,65 @@ class RoleController extends BaseController
      **/
     public function show($id)
     {
-        $role = Role::find($id);
-        if (!is_null($role)) {
-            return $this->sendResponse(new RoleResource($role), 'succés.');
+        $acteur = TypeActeur::find($id);
+        if (!is_null($acteur)) {
+            return $this->sendResponse(new TypeActeurResource($acteur), 'succés.');
           } else {
-            return $this->sendError('Ce role n\'existe pas');
+            return $this->sendError('Cet acteur n\'existe pas');
+          }
+    }
+
+
+     /**
+     * @OA\Get(
+     ** path="/v1/acteurs-by-financement/{id}",
+     *   tags={"Acteur"},
+     *   summary=" Acteur by source de financement",
+     *   operationId="List Acteur",
+     *  security={{"bearerAuth": {}}},
+     *
+     *   @OA\Parameter(
+     *      name="id",
+     *      in="path",
+     *      required=true,
+     *      @OA\Schema(
+     *           type="integer"
+     *      )
+     *   ),
+     *
+     *   @OA\Response(
+     *      response=200,
+     *      description="Success",
+     *      @OA\Property(ref="#/components/schemas/Acteur"),
+     *      @OA\MediaType(
+     *           mediaType="application/json",
+     *      )
+     *   ),
+     *   @OA\Response(
+     *      response=401,
+     *      description="Unauthenticated"
+     *   ),
+     *   @OA\Response(
+     *      response=400,
+     *      description="Bad Request"
+     *   ),
+     *   @OA\Response(
+     *      response=404,
+     *      description="not found"
+     *   ),
+     *      @OA\Response(
+     *          response=403,
+     *          description="Forbidden"
+     *      )
+     *)
+     **/
+    public function ActeurByFinancement($id)
+    {
+        $acteur = TypeActeur::where('source_financement_id',$id)->get();
+        if (!is_null($acteur)) {
+            return $this->sendResponse(TypeActeurResource::collection($acteur), 'succés.');
+          } else {
+            return $this->sendError('Cet acteur n\'existe pas');
           }
     }
 
@@ -211,10 +266,10 @@ class RoleController extends BaseController
 
       /**
      * @OA\Put(
-     ** path="/v1/roles/{id}",
-     *   tags={"Roles"},
-     *   summary="Edit Role",
-     *   operationId="Edit Role",
+     ** path="/v1/acteurs/{id}",
+     *   tags={"Acteur"},
+     *   summary="Edit acteur",
+     *   operationId="Edit acteur",
      *   security={{"bearerAuth": {}}},
      *
     *   @OA\Parameter(
@@ -227,7 +282,7 @@ class RoleController extends BaseController
      *  ),
      * 
      *  @OA\Parameter(
-     *      name="nom",
+     *      name="libelle",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
@@ -236,11 +291,11 @@ class RoleController extends BaseController
      *   ),
      * 
      *  @OA\Parameter(
-     *      name="permission_id[]",
+     *      name="source_financement_id",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="integer"),
+     *           type="integer"
      *      )
      *   ),
      * 
@@ -276,15 +331,15 @@ class RoleController extends BaseController
             'permission' => 'required',
         ]); */
         
-        $role = Role::find($id);
-        if (is_null($role)) {
-            return $this->sendError('Ce role n\'existe pas');
+        $acteur = TypeActeur::find($id);
+        if (is_null($acteur)) {
+            return $this->sendError('Cet acteur n\'existe pas');
           } 
-        $role->name =  $request->input('name') ? $request->input('name'): $role->name;
-        $role->save();
-        $role->syncPermissions($request->input('permission_id'));
+        $acteur->libelle =  $request->input('libelle') ? $request->input('libelle'): $acteur->libelle;
+        $acteur->source_financement_id =  $request->input('source_financement_id') ? $request->input('source_financement_id'): $acteur->source_financement_id;
+        $acteur->save();
 
-        return $this->sendResponse(new RoleResource($role), 'Role Modifié avec succés.');
+        return $this->sendResponse(new TypeActeurResource($acteur), 'Acteur Modifié avec succés.');
 
     }
 
@@ -297,10 +352,10 @@ class RoleController extends BaseController
 
      /**
      * @OA\Delete(
-     ** path="/v1/roles/{id}",
-     *   tags={"Roles"},
-     *   summary="Delete Role",
-     *   operationId="delete Role",
+     ** path="/v1/acteurs/{id}",
+     *   tags={"Acteur"},
+     *   summary="Delete Acteur",
+     *   operationId="delete Acteur",
      *  security={{"bearerAuth": {}}},
      *
      *   @OA\Parameter(
@@ -315,7 +370,7 @@ class RoleController extends BaseController
      *   @OA\Response(
      *      response=200,
      *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/Role"),
+     *      @OA\Property(ref="#/components/schemas/Acteur"),
      *      @OA\MediaType(
      *           mediaType="application/json",
      *      )
@@ -340,11 +395,11 @@ class RoleController extends BaseController
      **/
     public function destroy($id)
     {
-        $role = Role::find($id);
-        if (is_null($role)) {
-            return $this->sendError('Ce role n\'existe pas');
+        $acteur = TypeActeur::find($id);
+        if (is_null($acteur)) {
+            return $this->sendError('Cet acteur n\'existe pas');
           } 
-        $role->delete();
-        return $this->sendResponse([], 'Role supprimé avec succés.');
+        $acteur->delete();
+        return $this->sendResponse([], 'Acteur supprimé avec succés.');
     }
 }

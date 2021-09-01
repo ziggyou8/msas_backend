@@ -19,20 +19,27 @@ class Structure extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'logo',
         'denomination',
         'type_fonds', 
         'addresse_siege',
         'telephone',
+        'source_financement_id',
+        'type_acteur_id',
         'prenom_personne_responsable',
         'nom_personne_responsable',
         'telephone_personne_responsable',
         'email_personne_responsable',
-        'source_financement_id'
     ];
 
     public function sourceFiancement()
     {
         return $this->belongsTo(SourceFinancement::class, 'source_financement_id')->select('id', 'denomination');
+    }
+
+    public function acteur()
+    {
+        return $this->hasOne(TypeActeur::class, 'id', 'type_acteur_id')->select('libelle');;
     }
 
     /**
@@ -64,6 +71,11 @@ class Structure extends Model
      * 
      * @OA\Property(
      *      property="source_financement_id",
+     *      type="integer", 
+     * ),
+     * 
+     * @OA\Property(
+     *      property="type_acteur_id",
      *      type="integer", 
      * ),
      * 

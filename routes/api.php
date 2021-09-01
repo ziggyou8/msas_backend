@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\RoleController;
 use App\Http\Controllers\API\SourceFinancementController;
 use App\Http\Controllers\API\StructureController;
+use App\Http\Controllers\API\TypeActeurController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -42,6 +44,7 @@ Route::middleware('auth:api')->group( function () {
 
     Route::post('v1/financements',[SourceFinancementController::class, 'store']);
     Route::get('v1/financements',[SourceFinancementController::class, 'index']);
+    Route::get('v1/financements/{id}',[SourceFinancementController::class, 'show']);
     Route::put('v1/financements/{id}',[SourceFinancementController::class, 'update']);
     Route::delete('v1/financements/{id}',[SourceFinancementController::class, 'destroy']);
 
@@ -54,6 +57,17 @@ Route::middleware('auth:api')->group( function () {
     Route::get('v1/roles',[RoleController::class, 'index']);
     Route::get('v1/roles/{id}',[RoleController::class, 'show']);
     Route::delete('v1/roles/{id}',[RoleController::class, 'destroy']);
+    Route::get('v1/permissions', PermissionController::class);
+
+    Route::get('v1/acteurs',[TypeActeurController::class, 'index']);
+    Route::post('v1/acteurs',[TypeActeurController::class, 'store']);
+    Route::get('v1/acteurs/{id}',[TypeActeurController::class, 'show']);
+    Route::get('v1/acteurs-by-financement/{id}',[TypeActeurController::class, 'ActeurByFinancement']);
+    Route::delete('v1/acteurs/{id}',[TypeActeurController::class, 'destroy']);
+    Route::put('v1/acteurs/{id}',[TypeActeurController::class, 'update']);
+
+    
+
 
 });
 Route::post('v1/roles',[RoleController::class, 'store']);

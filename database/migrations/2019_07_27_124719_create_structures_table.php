@@ -16,6 +16,7 @@ class CreateStructuresTable extends Migration
         Schema::create('structures', function (Blueprint $table) {
             //$table->id();
             $table->increments('id');
+            $table->longText('logo')->nullable();
             $table->string('denomination');
             $table->string('type_fonds');
             $table->string('addresse_siege');
@@ -26,6 +27,8 @@ class CreateStructuresTable extends Migration
             $table->string('email_personne_responsable')->nullable();;
             $table->unsignedInteger('source_financement_id')->nullable();
             $table->foreign('source_financement_id')->references('id')->on('source_financements')->onDelete('cascade');
+            $table->unsignedInteger('type_acteur_id')->nullable();
+            $table->foreign('type_acteur_id')->references('id')->on('type_acteurs')->onDelete('cascade');
             $table->timestamps();
         });
     }
