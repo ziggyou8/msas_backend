@@ -32,7 +32,7 @@ Route::group([
     Route::post('login', [RegisterController::class, 'login']);
   });
      
-Route::middleware('auth:api')->group( function () {
+Route::group(['middleware' => ['auth:api', 'cors']],  function () {
     /* Route::resource('users', UserController::class); */
     Route::post('v1/logout',[RegisterController::class, 'logout'] );
     Route::get('v1/users',[UserController::class, 'index'] );
