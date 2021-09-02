@@ -26,8 +26,7 @@ Route::post('login', [RegisterController::class, 'login']); */
 
 Route::group([
     'prefix' => 'v1', 
-    'as' => 'api.'
-  ], function () {
+    'as' => 'api.','middleware' => ['cors']], function () {
     Route::post('register', [RegisterController::class, 'register']);
     Route::post('login', [RegisterController::class, 'login']);
   });
