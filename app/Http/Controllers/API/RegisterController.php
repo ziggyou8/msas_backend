@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends BaseController
 {
+    public function __construct()                           
+    {
+        $this->middleware("cors");
+    }
     /**
      * Register api
      *
