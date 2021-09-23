@@ -14,7 +14,7 @@
     },
     "servers": [
         {
-            "url": "http:///176.31.107.205:8000/api",
+            "url": "http://176.31.107.205:8000/api",
             "description": "MSAS API Server"
         }
     ],
