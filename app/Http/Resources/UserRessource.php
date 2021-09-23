@@ -16,16 +16,17 @@ class UserRessource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'photo' => $this->photo,
-            'prenom' => $this->prenom,
-            'nom' => $this->nom,
-            'telephone' => $this->telephone,
-            'email' => $this->email,
-            'roles'=>$this->getRoleNames(),
-            'permission'=>$this->getPermissionsViaRoles()->pluck('name'),
-            'created_at' => $this->created_at->format('d/m/Y'),
-            'updated_at' => $this->updated_at->format('d/m/Y'),
+            "id" => $this->id,
+            "photo" => $this->photo,
+            "prenom" => $this->prenom,
+            "nom" => $this->nom,
+            "telephone" => $this->telephone,
+            "email" => $this->email,
+            "roles"=>$this->getRoleNames(),
+            "structures"=>$this->structures,
+            "permission"=>$this->getPermissionsViaRoles()->pluck("name"),
+            "created_at" => $this->created_at->format("d/m/Y"),
+            "updated_at" => $this->updated_at->format("d/m/Y"),
         ];
     }
 }

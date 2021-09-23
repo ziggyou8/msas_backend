@@ -18,7 +18,7 @@ class SourceFinancement extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['denomination'/* , 'structure_id' */];
+    protected $fillable = ["denomination"/* , "structure_id" */];
 
     public function acteurs()
     {

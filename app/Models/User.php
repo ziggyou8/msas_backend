@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Models\Structures\Structure;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -23,19 +24,23 @@ class User extends Authenticatable
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
     
 
+   /*  public function structures(){
+        return $this->belongsToMany(Structure::class,"structures_users");
+   } */
+   
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'photo',
-        'prenom',
-        'nom',
-        'telephone',
-        'email',
-        'password',
-        'structure_id'
+        "photo",
+        "prenom",
+        "nom",
+        "telephone",
+        "email",
+        "password",
     ];
 
     /**
@@ -44,8 +49,8 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password',
-        'remember_token',
+        "password",
+        "remember_token",
     ];
 
     /**
@@ -54,7 +59,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $casts = [
-        'email_verified_at' => 'datetime',
+        "email_verified_at" => "datetime",
     ];
 
     /**
@@ -88,15 +93,14 @@ class User extends Authenticatable
      *      type="string", 
      * ),
      * @OA\Property(
-     *      property="structure_id",
-     *      type="integer", 
-     * ),
+     *      property="structure_id[]", 
+     *      type="array",@OA\Items(type="integer"),
+     *  ),
      * 
      * @OA\Property(
-     *      property="roles[]", 
-     *      
-     *      type="array",@OA\Items(type="string"),
-     *  ),
+     *      property="role",
+     *      type="string", 
+     * ),
      * 
      * @OA\Property(
      *      property="password",
