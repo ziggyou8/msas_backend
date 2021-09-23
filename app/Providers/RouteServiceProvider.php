@@ -52,7 +52,8 @@ class RouteServiceProvider extends ServiceProvider
             Route::group([
                 'middleware' => ['api', 'cors'],
                 'namespace' => $this->namespace,
-                'prefix' => 'api/v1',
+                'prefix' => 'v1',
+                "as" => "api.",
             ], function ($router) {
                     //Add you routes here, for example:
                     Route::post("login", [RegisterController::class, "login"]);
