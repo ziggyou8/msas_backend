@@ -13,7 +13,7 @@ class RegisterController extends BaseController
 {
     public function __construct()                           
     {
-        //$this->middleware("cors");
+        $this->middleware("cors");
     }
     /**
      * Register api
