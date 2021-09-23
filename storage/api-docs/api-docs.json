@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "MSAS API documentation",
-        "description": " Ministère de la santé et de l"action sociale API with in Laravel & passport",
+        "description": " Ministère de la santé et de l'action sociale API with in Laravel & passport",
         "contact": {
             "email": "magueye717@gmail.com"
         },
@@ -189,7 +189,7 @@
                 ]
             }
         },
-        "/v1/collectivites/{code_parent}": {
+        "/v1/collectivites/by_parent/{parent_code}": {
             "get": {
                 "tags": [
                     "Collectivites"
@@ -874,198 +874,6 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/v1/financements": {
-            "get": {
-                "tags": [
-                    "SourceFinancements"
-                ],
-                "summary": "List SourceFinancements ",
-                "operationId": "List SourceFinancements",
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "post": {
-                "tags": [
-                    "SourceFinancements"
-                ],
-                "summary": "Create SourceFinancement",
-                "operationId": "create SourceFinancement",
-                "parameters": [
-                    {
-                        "name": "denomination",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "type_acteur[]",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            }
-        },
-        "/v1/financements/{id}": {
-            "get": {
-                "tags": [
-                    "SourceFinancements"
-                ],
-                "summary": "Detail SourceFinancement",
-                "operationId": "SourceFinancement Detail",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Success",
-                        "content": {
-                            "application/json": {}
-                        }
-                    },
-                    "401": {
-                        "description": "Unauthenticated"
-                    },
-                    "400": {
-                        "description": "Bad Request"
-                    },
-                    "404": {
-                        "description": "not found"
-                    },
-                    "403": {
-                        "description": "Forbidden"
-                    }
-                },
-                "security": [
-                    {
-                        "bearerAuth": []
-                    }
-                ]
-            },
-            "put": {
-                "tags": [
-                    "SourceFinancements"
-                ],
-                "summary": "Update SourceFinancement",
-                "operationId": "Update SourceFinancement",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    },
-                    {
-                        "name": "denomination",
-                        "in": "query",
-                        "required": false,
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    {
-                        "name": "type_acteur[]",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
                         "description": "Success",
                         "content": {
                             "application/json": {}
@@ -2146,49 +1954,6 @@
                 "type": "object",
                 "xml": {
                     "name": "SourceFinancement"
-                }
-            },
-            "Structure": {
-                "title": "Structure",
-                "description": "Structure model",
-                "properties": {
-                    "id": {
-                        "type": "integer"
-                    },
-                    "denomination": {
-                        "type": "string"
-                    },
-                    "type_fonds": {
-                        "type": "string"
-                    },
-                    "addresse_siege": {
-                        "type": "string"
-                    },
-                    "telephone": {
-                        "type": "string"
-                    },
-                    "source_financement_id": {
-                        "type": "integer"
-                    },
-                    "type_acteur_id": {
-                        "type": "integer"
-                    },
-                    "prenom_personne_responsable": {
-                        "type": "string"
-                    },
-                    "nom_personne_responsable": {
-                        "type": "string"
-                    },
-                    "email_personne_responsable": {
-                        "type": "string"
-                    },
-                    "telephone_personne_responsable": {
-                        "type": "string"
-                    }
-                },
-                "type": "object",
-                "xml": {
-                    "name": "Structure"
                 }
             },
             "TypeActeur": {
