@@ -15,7 +15,7 @@ class PermissionController extends BaseController
     public function __invoke(Request $request)
     {
         $permissions = Permission::all();
-       // $permissions = User::whereDoesntHave('admin')->get();
-        return $this->sendResponse(PermissionResource::collection($permissions), 'succés.');
+       // $permissions = User::whereDoesntHave("admin")->get();
+        return $this->sendResponse(PermissionResource::collection($permissions), "succés.");
     }
 }

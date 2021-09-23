@@ -15,10 +15,10 @@ class SourceFinancementRessoure extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'denomination' => $this->denomination,
-            /* 'structure_id' => $this->structure_id, */
-            'acteurs' =>  $this->acteurs,
+            "id" => $this->id,
+            "denomination" => $this->denomination,
+            /* "structure_id" => $this->structure_id, */
+            "acteurs" =>  $this->acteurs,
         ];
     }
 }

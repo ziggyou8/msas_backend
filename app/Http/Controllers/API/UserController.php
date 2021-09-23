@@ -54,9 +54,9 @@ class UserController extends BaseController
     public function index()
     {
         $users = User::all();
-       // $users = User::whereDoesntHave('admin')->get();
+       // $users = User::whereDoesntHave("admin")->get();
     
-        return $this->sendResponse(UserRessource::collection($users), 'succés.');
+        return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
 
 
@@ -124,12 +124,21 @@ class UserController extends BaseController
      *      )
      *   ),
      * 
-     *  @OA\Parameter(
-     *      name="roles[]",
+     *   @OA\Parameter(
+     *      name="role",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="string"),
+     *           type="string"
+     *      )
+     *   ),
+     * 
+     * *  @OA\Parameter(
+     *      name="structure_id[]",
+     *      in="query",
+     *      required=false,
+     *      @OA\Schema(
+     *          type="array",@OA\Items(type="integer"),
      *      )
      *   ),
      * 
@@ -161,23 +170,27 @@ class UserController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-        $input['password'] = bcrypt("passer");
+        $input["password"] = bcrypt("passer");
 
         $validator = Validator::make($input, [
-            'prenom' => 'required',
-            'nom' => 'required',
-            'email' => 'required'
+            "prenom" => "required",
+            "nom" => "required",
+            "email" => "required"
         ]);
    
         if($validator->fails()){
-            return $this->sendError('Validation Error.', $validator->errors());       
+            return $this->sendError("Validation Error.", $validator->errors());       
         }
-   
+          
         $user = User::create($input);
-        $roles = $request->only('roles');
-        $user->assignRole($roles);
-   
-        return $this->sendResponse(new UserRessource($user), 'Utilisateur ajouté avec succés.');
+        $request->role && $user->assignRole($request->role);
+        $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
+
+       /*  if($request->structure_id){
+            $user->structures()->attach($request->only("structure_id")["structure_id"]);
+        } */
+
+        return $this->sendResponse(new UserRessource($user), "Utilisateur ajouté avec succés.");
     }
 
     /**
@@ -234,9 +247,9 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         if (!is_null($user)) {
-            return $this->sendResponse(new UserRessource($user), 'succés.');
+            return $this->sendResponse(new UserRessource($user), "succés.");
           } else {
-            return $this->sendError('Cet utilisateur n\'existe pas');
+            return $this->sendError("Cet utilisateur n'existe pas");
           }
       
     }
@@ -326,12 +339,12 @@ class UserController extends BaseController
      *      )
      *   ),
      * 
-     *  @OA\Parameter(
-     *      name="roles[]",
+     *   @OA\Parameter(
+     *      name="role",
      *      in="query",
      *      required=false,
      *      @OA\Schema(
-     *          type="array",@OA\Items(type="string"),
+     *           type="string"
      *      )
      *   ),
      * 
@@ -366,12 +379,14 @@ class UserController extends BaseController
         $user->photo =  $request->photo ? $request->photo : $user->photo;
         $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
         $user->nom =  $request->nom ? $request->nom : $user->nom;
-        $user->structure_id =  $request->structure_id ? $request->structure_id : $user->structure_id;
         $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
         $user->email = $request->email ? $request->email : $user->email;
         $user->password = $request->password ? bcrypt($request->password ) : $user->password;
         $user->save();
-        return $this->sendResponse(new UserRessource($user), 'succés.');
+        $request->role && $user->syncRoles($request->role);
+        $request->structure_id && $user->structures()->sync($request->only("structure_id")["structure_id"]);
+        
+        return $this->sendResponse(new UserRessource($user), "succés.");
     }
 
     /**
@@ -428,7 +443,7 @@ class UserController extends BaseController
     {
         $user = User::find($id);
         $user->delete();
-        return $this->sendResponse([], 'Utilisateur supprimé avec succés.');
+        return $this->sendResponse([], "Utilisateur supprimé avec succés.");
     }
 
     /**
@@ -467,6 +482,6 @@ class UserController extends BaseController
      *)
      **/
     public function get_current_user(Request $request){
-        return $this->sendResponse(new UserRessource($request->user()), 'succés.');
+        return $this->sendResponse(new UserRessource($request->user()), "succés.");
     }
 }

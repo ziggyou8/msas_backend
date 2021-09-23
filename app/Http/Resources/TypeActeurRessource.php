@@ -15,9 +15,9 @@ class TypeActeurRessource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
-            'libelle' => $this->libelle,
-            'source_financement_id' =>  $this->source_financement_id,
+            "id" => $this->id,
+            "libelle" => $this->libelle,
+            "source_financement_id" =>  $this->source_financement_id,
         ];
     }
 }

@@ -12,7 +12,7 @@ class Controller extends BaseController
      * @OA\Info(
      *      version="1.0.0",
      *      title="MSAS API documentation",
-     *      description=" Ministère de la santé et de l'action sociale API with in Laravel & passport",
+     *      description=" Ministère de la santé et de l"action sociale API with in Laravel & passport",
      *      @OA\Contact(
      *          email="magueye717@gmail.com"
      *      ),

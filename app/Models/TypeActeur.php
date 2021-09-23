@@ -18,7 +18,7 @@ class TypeActeur extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['libelle', 'source_financement_id'];
+    protected $fillable = ["libelle", "source_financement_id"];
 
     public function sourceFiancement()
     {
@@ -27,7 +27,7 @@ class TypeActeur extends Model
 
     public function structure()
     {
-        return $this->belongsTo(Structure::class, 'type_acteur_id');
+        return $this->belongsTo(Structure::class, "type_acteur_id");
     }
 }
 

@@ -19,27 +19,27 @@ class Structure extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'logo',
-        'denomination',
-        'type_fonds', 
-        'addresse_siege',
-        'telephone',
-        'source_financement_id',
-        'type_acteur_id',
-        'prenom_personne_responsable',
-        'nom_personne_responsable',
-        'telephone_personne_responsable',
-        'email_personne_responsable',
+        "logo",
+        "denomination",
+        "type_fonds", 
+        "addresse_siege",
+        "telephone",
+        "source_financement_id",
+        "type_acteur_id",
+        "prenom_personne_responsable",
+        "nom_personne_responsable",
+        "telephone_personne_responsable",
+        "email_personne_responsable",
     ];
 
     public function sourceFiancement()
     {
-        return $this->belongsTo(SourceFinancement::class, 'source_financement_id')->select('id', 'denomination');
+        return $this->belongsTo(SourceFinancement::class, "source_financement_id")->select("id", "denomination");
     }
 
     public function acteur()
     {
-        return $this->hasOne(TypeActeur::class, 'id', 'type_acteur_id')->select('libelle');;
+        return $this->hasOne(TypeActeur::class, "id", "type_acteur_id")->select("libelle");;
     }
 
     /**

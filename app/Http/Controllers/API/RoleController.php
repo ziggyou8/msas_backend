@@ -52,8 +52,8 @@ class RoleController extends BaseController
      **/
     public function index()
     {
-        $roles = Role::orderBy('id','DESC')->get();
-        return $this->sendResponse(RoleResource::collection($roles), 'succés.');
+        $roles = Role::orderBy("id","DESC")->get();
+        return $this->sendResponse(RoleResource::collection($roles), "succés.");
     }
 
 
@@ -118,15 +118,15 @@ class RoleController extends BaseController
     public function store(Request $request)
     {
         /* $this->validate($request, [
-            'name' => 'required|unique:roles,name',
-            'permission_id' => 'required',
+            "name" => "required|unique:roles,name",
+            "permission_id" => "required",
         ]); */
     
-        $role = Role::create(['name' => $request->input('name')]);
+        $role = Role::create(["name" => $request->input("name")]);
         
-        $role->syncPermissions($request->only('permission_id'));
+        $role->syncPermissions($request->only("permission_id"));
 
-        return $this->sendResponse(new RoleResource($role), 'Role ajouté avec succés.');
+        return $this->sendResponse(new RoleResource($role), "Role ajouté avec succés.");
         
     }
 
@@ -184,9 +184,9 @@ class RoleController extends BaseController
     {
         $role = Role::find($id);
         if (!is_null($role)) {
-            return $this->sendResponse(new RoleResource($role), 'succés.');
+            return $this->sendResponse(new RoleResource($role), "succés.");
           } else {
-            return $this->sendError('Ce role n\'existe pas');
+            return $this->sendError("Ce role n'existe pas");
           }
     }
 
@@ -272,19 +272,19 @@ class RoleController extends BaseController
     public function update(Request $request, $id)
     {
         /* $this->validate($request, [
-            'nom' => 'required',
-            'permission' => 'required',
+            "nom" => "required",
+            "permission" => "required",
         ]); */
         
         $role = Role::find($id);
         if (is_null($role)) {
-            return $this->sendError('Ce role n\'existe pas');
+            return $this->sendError("Ce role n'existe pas");
           } 
-        $role->name =  $request->input('name') ? $request->input('name'): $role->name;
+        $role->name =  $request->input("name") ? $request->input("name"): $role->name;
         $role->save();
-        $role->syncPermissions($request->input('permission_id'));
+        $role->syncPermissions($request->input("permission_id"));
 
-        return $this->sendResponse(new RoleResource($role), 'Role Modifié avec succés.');
+        return $this->sendResponse(new RoleResource($role), "Role Modifié avec succés.");
 
     }
 
@@ -342,9 +342,9 @@ class RoleController extends BaseController
     {
         $role = Role::find($id);
         if (is_null($role)) {
-            return $this->sendError('Ce role n\'existe pas');
+            return $this->sendError("Ce role n'existe pas");
           } 
         $role->delete();
-        return $this->sendResponse([], 'Role supprimé avec succés.');
+        return $this->sendResponse([], "Role supprimé avec succés.");
     }
 }

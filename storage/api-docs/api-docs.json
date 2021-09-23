@@ -2,7 +2,7 @@
     "openapi": "3.0.0",
     "info": {
         "title": "MSAS API documentation",
-        "description": " Ministère de la santé et de l'action sociale API with in Laravel & passport",
+        "description": " Ministère de la santé et de l"action sociale API with in Laravel & passport",
         "contact": {
             "email": "magueye717@gmail.com"
         },
@@ -14,11 +14,501 @@
     },
     "servers": [
         {
+<<<<<<< HEAD
             "url": "http://176.31.107.205:8000/api",
+=======
+            "url": "http://localhost:8000/api",
+>>>>>>> 44956211e1e1b0384b1d921bc0fb258e57238eb1
             "description": "MSAS API Server"
         }
     ],
     "paths": {
+        "/v1/collectivites": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "List Collectivite ",
+                "operationId": "List Collectivite",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/regions": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "List Régions ",
+                "operationId": "List Régions",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/departements": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "List Départements ",
+                "operationId": "List Départements",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/communes": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "List Communes ",
+                "operationId": "List Communes",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/quartiers": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "List Quartiers ",
+                "operationId": "List Quartiers",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/{code_parent}": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "Detail Collectivite",
+                "operationId": "Collectivite Detail",
+                "parameters": [
+                    {
+                        "name": "code_parent",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/collectivites/{id}": {
+            "get": {
+                "tags": [
+                    "Collectivites"
+                ],
+                "summary": "Detail Collectivite",
+                "operationId": "Collectivite Detail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/districtes": {
+            "get": {
+                "tags": [
+                    "Districtes"
+                ],
+                "summary": "List Districte ",
+                "operationId": "List Districte",
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Districtes"
+                ],
+                "summary": "Create districte",
+                "operationId": "create districte",
+                "parameters": [
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collectivite_id",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/districtes/{id}": {
+            "get": {
+                "tags": [
+                    "Districtes"
+                ],
+                "summary": "Detail Districte",
+                "operationId": "Districte Detail",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Districtes"
+                ],
+                "summary": "Edit Districte",
+                "operationId": "Edit Districte",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "nom",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "collectivite_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Districte"
+                ],
+                "summary": "Delete Districte",
+                "operationId": "delete Districte",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "content": {
+                            "application/json": {}
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    },
+                    "400": {
+                        "description": "Bad Request"
+                    },
+                    "404": {
+                        "description": "not found"
+                    },
+                    "403": {
+                        "description": "Forbidden"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
         "/v1/register": {
             "post": {
                 "tags": [
@@ -1305,13 +1795,21 @@
                         }
                     },
                     {
-                        "name": "roles[]",
+                        "name": "role",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "structure_id[]",
                         "in": "query",
                         "required": false,
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "string"
+                                "type": "integer"
                             }
                         }
                     }
@@ -1449,14 +1947,11 @@
                         }
                     },
                     {
-                        "name": "roles[]",
+                        "name": "role",
                         "in": "query",
                         "required": false,
                         "schema": {
-                            "type": "array",
-                            "items": {
-                                "type": "string"
-                            }
+                            "type": "string"
                         }
                     }
                 ],
@@ -1566,6 +2061,53 @@
     },
     "components": {
         "schemas": {
+            "Collectivite": {
+                "title": "Collectivite",
+                "description": "Collectivite model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "string"
+                    },
+                    "statut": {
+                        "type": "string"
+                    },
+                    "type_collectivite": {
+                        "type": "string"
+                    },
+                    "parent_code": {
+                        "type": "string"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Collectivite"
+                }
+            },
+            "DistrictSanitaire": {
+                "title": "Districte",
+                "description": "Districte model",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "nom": {
+                        "type": "string"
+                    },
+                    "collectivite_id": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object",
+                "xml": {
+                    "name": "Districte"
+                }
+            },
             "RoleApiModel": {
                 "title": "Role",
                 "description": "Role model",
@@ -1694,14 +2236,14 @@
                     "email": {
                         "type": "string"
                     },
-                    "structure_id": {
-                        "type": "integer"
-                    },
-                    "roles[]": {
+                    "structure_id[]": {
                         "type": "array",
                         "items": {
-                            "type": "string"
+                            "type": "integer"
                         }
+                    },
+                    "role": {
+                        "type": "string"
                     },
                     "password": {
                         "type": "string"

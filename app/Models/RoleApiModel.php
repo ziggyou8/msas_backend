@@ -19,7 +19,7 @@ class RoleApiModel extends Model
     use HasFactory;
 
     protected $fillable = [
-        'name'
+        "name"
     ];
 
     /**

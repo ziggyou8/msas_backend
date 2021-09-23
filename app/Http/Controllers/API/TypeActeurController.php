@@ -52,8 +52,8 @@ class TypeActeurController extends BaseController
      **/
     public function index()
     {
-        $acteurs = TypeActeur::orderBy('id','DESC')->get();
-        return $this->sendResponse(TypeActeurResource::collection($acteurs), 'succés.');
+        $acteurs = TypeActeur::orderBy("id","DESC")->get();
+        return $this->sendResponse(TypeActeurResource::collection($acteurs), "succés.");
     }
 
 
@@ -118,16 +118,16 @@ class TypeActeurController extends BaseController
     public function store(Request $request)
     {
         /* $this->validate($request, [
-            'name' => 'required|unique:roles,name',
-            'permission_id' => 'required',
+            "name" => "required|unique:roles,name",
+            "permission_id" => "required",
         ]); */
     
         $acteur = TypeActeur::create([
-            'libelle' => $request->input('libelle'),
-            'source_financement_id' => $request->input('source_financement_id')
+            "libelle" => $request->input("libelle"),
+            "source_financement_id" => $request->input("source_financement_id")
         ]);
 
-        return $this->sendResponse(new TypeActeurResource($acteur), 'Role ajouté avec succés.');
+        return $this->sendResponse(new TypeActeurResource($acteur), "Role ajouté avec succés.");
         
     }
 
@@ -185,9 +185,9 @@ class TypeActeurController extends BaseController
     {
         $acteur = TypeActeur::find($id);
         if (!is_null($acteur)) {
-            return $this->sendResponse(new TypeActeurResource($acteur), 'succés.');
+            return $this->sendResponse(new TypeActeurResource($acteur), "succés.");
           } else {
-            return $this->sendError('Cet acteur n\'existe pas');
+            return $this->sendError("Cet acteur n'existe pas");
           }
     }
 
@@ -237,11 +237,11 @@ class TypeActeurController extends BaseController
      **/
     public function ActeurByFinancement($id)
     {
-        $acteur = TypeActeur::where('source_financement_id',$id)->get();
+        $acteur = TypeActeur::where("source_financement_id",$id)->get();
         if (!is_null($acteur)) {
-            return $this->sendResponse(TypeActeurResource::collection($acteur), 'succés.');
+            return $this->sendResponse(TypeActeurResource::collection($acteur), "succés.");
           } else {
-            return $this->sendError('Cet acteur n\'existe pas');
+            return $this->sendError("Cet acteur n'existe pas");
           }
     }
 
@@ -327,19 +327,19 @@ class TypeActeurController extends BaseController
     public function update(Request $request, $id)
     {
         /* $this->validate($request, [
-            'nom' => 'required',
-            'permission' => 'required',
+            "nom" => "required",
+            "permission" => "required",
         ]); */
         
         $acteur = TypeActeur::find($id);
         if (is_null($acteur)) {
-            return $this->sendError('Cet acteur n\'existe pas');
+            return $this->sendError("Cet acteur n'existe pas");
           } 
-        $acteur->libelle =  $request->input('libelle') ? $request->input('libelle'): $acteur->libelle;
-        $acteur->source_financement_id =  $request->input('source_financement_id') ? $request->input('source_financement_id'): $acteur->source_financement_id;
+        $acteur->libelle =  $request->input("libelle") ? $request->input("libelle"): $acteur->libelle;
+        $acteur->source_financement_id =  $request->input("source_financement_id") ? $request->input("source_financement_id"): $acteur->source_financement_id;
         $acteur->save();
 
-        return $this->sendResponse(new TypeActeurResource($acteur), 'Acteur Modifié avec succés.');
+        return $this->sendResponse(new TypeActeurResource($acteur), "Acteur Modifié avec succés.");
 
     }
 
@@ -397,9 +397,9 @@ class TypeActeurController extends BaseController
     {
         $acteur = TypeActeur::find($id);
         if (is_null($acteur)) {
-            return $this->sendError('Cet acteur n\'existe pas');
+            return $this->sendError("Cet acteur n'existe pas");
           } 
         $acteur->delete();
-        return $this->sendResponse([], 'Acteur supprimé avec succés.');
+        return $this->sendResponse([], "Acteur supprimé avec succés.");
     }
 }
