@@ -27,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 Route::post("login", [RegisterController::class, "login"]); */
 
 Route::group([
-    'middleware' => ['cors'],
+    'middleware' => 'cors',
     "prefix" => "v1",
     "as" => "api."
   ], function () {
