@@ -6,6 +6,7 @@ use App\Enums\TypeActeur;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\StructureResource;
 use App\Models\Structures\Structure;
+use App\Models\sousRecipiandaire;
 use App\Repositories\Structures\CollectiviteTerritorialeRepository;
 use App\Repositories\Structures\EpsRepository;
 use App\Repositories\Structures\EtatRepository;
@@ -16,6 +17,8 @@ use App\Repositories\Structures\SpsRepository;
 use App\Repositories\Structures\StructureRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use App\Utils\UploadUtil;
+use App\Enums\TypeUpload;
 
 class StructureController extends BaseController
 {
@@ -28,6 +31,7 @@ class StructureController extends BaseController
     protected $userRepository;
     protected $epsRepository;
     protected $spsRepository;
+    protected $uploadUtil;
     
     public function __construct(StructureRepository $structureRepository,
                                 OngRepository $ongRepository,
@@ -37,7 +41,8 @@ class StructureController extends BaseController
                                 PtfRepository $ptfRepository,
                                 UserRepository $userRepository,
                                 EpsRepository $epsRepository,
-                                SpsRepository $spsRepository)
+                                SpsRepository $spsRepository,
+                                uploadUtil $uploadUtil)
                                 
     {
         $this->structureRepository = $structureRepository;
@@ -49,6 +54,7 @@ class StructureController extends BaseController
         $this->userRepository = $userRepository;
         $this->epsRepository = $epsRepository;
         $this->spsRepository = $spsRepository;
+        $this->uploadUtil = $uploadUtil;
         //$this->middleware("auth");
         // $this->middleware("permission:structure-list|structure-create", ["only" => ["index","store"]]);
     }
@@ -228,6 +234,7 @@ class StructureController extends BaseController
      */
     public function store(Request $request)
     {
+
         try {
         //les input partagés par les types d"acteur (step 1)
         $firstStepInputs["denomination"] = $request->denomination;
@@ -261,6 +268,7 @@ class StructureController extends BaseController
             $userInputs["password"] = bcrypt("passer");
             $this->userRepository->store($userInputs);
 
+
         } catch (\Throwable $e) {
             return $this->sendError("Erreur, cet adresse email est déjà utilisé");
         }
@@ -269,13 +277,11 @@ class StructureController extends BaseController
             //inputs pour les ONG et PTF
             case TypeActeur::ONG :
                 $ongInputs["structure_id"] = $structure->id;
-                $ongInputs["numero_agrement"] = $request->numero_agrement; //first step
+                $ongInputs["numero_agrement"] = $request->numero_agrement; 
                 $ongInputs["type"] = $request->type;
                 $ongInputs["accord_siege"] = $request->accord_siege;
-                /* $ongInputs["adresse_siege"] = $request->adresse_siege; */
-                $ongInputs["numero_agrement"] = $request->numero_agrement;
                 $ongInputs["bailleur"] = $request->bailleur;
-                $ongInputs["sous_recipiandaire"] = $request->sous_recipiandaire;
+               // $ongInputs["sous_recipiandaire"] = $request->sous_recipiandaire;
                 $ongInputs["date_debut_intervention"] = $request->date_debut_intervention;
                 $ongInputs["date_fin_intervention"] = $request->date_fin_intervention;
                 $ongInputs["email"] = $request->email;
@@ -285,7 +291,22 @@ class StructureController extends BaseController
                 $ongInputs["mt_mobilise_par_pilier"] = $request->mt_mobilise_par_pilier;
                 $ongInputs["mt_execute_par_pilier"] = $request->mt_execute_par_pilier;
                 $ongInputs["mecanisme_financement"] = $request->mecanisme_financement;
-                $this->ongRepository->store($ongInputs);
+                $ong = $this->ongRepository->store($ongInputs);
+
+                if($request->projet_sous_recipiandaire && $request->montant_sous_recipiandaire){
+                    $monatnts = $request->montant_sous_recipiandaire;
+                    $projets =collect($request->projet_sous_recipiandaire);
+            
+                    $multiplied = $projets->map(function ($item, $key) use($monatnts, $ong) {
+                        if ($item && $monatnts[$key]) {
+                             return sousRecipiandaire::create([
+                                'ong_id'=>$ong->id, 
+                                'projet'=>$item,
+                                'montant'=>$monatnts[$key]]);
+                        }
+                    });
+                }
+
                 break;
             case TypeActeur::PTF :
                 $ptfInputs["structure_id"] = $structure->id;
@@ -300,9 +321,12 @@ class StructureController extends BaseController
                 $ptfInputs["mt_prevu_par_pilier_annee_en_cour"] = $request->mt_prevu_par_pilier_annee_en_cour;
                 $ptfInputs["mt_mobilise_par_pilier"] = $request->mt_mobilise_par_pilier;
                 $ptfInputs["mt_execute_par_pilier"] = $request->mt_execute_par_pilier;
-                $ptfInputs["projection_annee_n_plus1_par_pilier"] = $request->projection_annee_n_plus1_par_pilier;
+                //$ptfInputs["projection_annee_n_plus1_par_pilier"] = $request->projection_annee_n_plus1_par_pilier;
                 $ptfInputs["projection_annee_n_plus2_par_pilier"] = $request->projection_annee_n_plus2_par_pilier;
                 $ptfInputs["mecanisme_financement"] = $request->mecanisme_financement;
+                if ($request->hasFile('projection_annee_n_plus1_par_pilier')) {
+                    $ptfInputs['projection_annee_n_plus1_par_pilier'] = $this->uploadUtil->traiterFile($request->file('projection_annee_n_plus1_par_pilier'), TypeUpload::PTF);
+                }
                 $this->ptfRepository->store($ptfInputs);
                 break;
                 //EPS attribut
