@@ -18,6 +18,11 @@ class CreateForeignKeys extends Migration {
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
+		Schema::table("sous_recipiandaires", function(Blueprint $table) {
+			$table->foreign("ong_id")->references("id")->on("ongs")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
 		Schema::table("eps", function(Blueprint $table) {
 			$table->foreign("structure_id")->references("id")->on("structures")
 						->onDelete("cascade")
@@ -82,6 +87,9 @@ class CreateForeignKeys extends Migration {
 		}); */
 		Schema::table("ongs", function(Blueprint $table) {
 			$table->dropForeign("ongs_structure_id_foreign");
+		});
+		Schema::table("sous_recipiandaires", function(Blueprint $table) {
+			$table->dropForeign("sous_recipiandaires_ong_id_foreign");
 		});
 		Schema::table("eps", function(Blueprint $table) {
 			$table->dropForeign("eps_structure_id_foreign");

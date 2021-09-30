@@ -2,7 +2,6 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\API\RegisterController;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -47,17 +46,6 @@ class RouteServiceProvider extends ServiceProvider
             Route::middleware("web")
                 ->namespace($this->namespace)
                 ->group(base_path("routes/web.php"));
-
-
-            Route::group([
-                'middleware' => ['api', 'cors'],
-                'namespace' => $this->namespace,
-                'prefix' => 'v1',
-                "as" => "api.",
-            ], function ($router) {
-                    //Add you routes here, for example:
-                    Route::post("login", [RegisterController::class, "login"]);
-            });
         });
     }
 

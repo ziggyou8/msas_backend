@@ -22,7 +22,7 @@ class Structure extends Model
 
     public function ong()
     {
-        return $this->hasOne(Ong::class);
+        return $this->hasOne(Ong::class)->with('sous_recipiandaires');
     }
     public function eps()
     {

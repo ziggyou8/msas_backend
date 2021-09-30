@@ -14,7 +14,7 @@ class CreateOngTable extends Migration {
 			$table->string("type")->nullable();
 			$table->string("numero_agrement")->nullable();
 			$table->string("bailleur")->nullable();
-			$table->string("sous_recipiandaire")->nullable();
+			//$table->string("sous_recipiandaire")->nullable();
 			$table->string("date_debut_intervention")->nullable();
 			$table->string("date_fin_intervention")->nullable();
 			$table->string("email")->nullable();
