@@ -15,7 +15,7 @@ return [
     */
 
     //"paths" => ["api/*", "sanctum/csrf-cookie"],
-    "paths" => ["api/*", "public/api/*", "http://176.31.107.205/msas_backend/public/api/*", "http://176.31.107.205/api/*"],
+    "paths" => ["api/*", "public/api/*", "msas_backend/public/api/*","sanctum/csrf-cookie"],
 
     "allowed_methods" => ["*"],
 
