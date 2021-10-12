@@ -52,6 +52,7 @@ Route::middleware("auth:api")->group( function () {
     Route::delete("v1/financements/{id}",[SourceFinancementController::class, "destroy"]);
 
     Route::get("v1/structures",[StructureController::class, "index"]);
+    Route::get("v1/structures/type_acteur/{type}",[StructureController::class, "getacteur"]);
     Route::post("v1/structures",[StructureController::class, "store"]);
     Route::get("v1/structures/{id}",[StructureController::class, "show"]);
     Route::put("v1/structures/{id}",[StructureController::class, "update"]);

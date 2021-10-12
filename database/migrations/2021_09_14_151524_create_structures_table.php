@@ -9,12 +9,13 @@ class CreateStructuresTable extends Migration {
 	{
 		Schema::create("structures", function(Blueprint $table) {
 			$table->increments("id");
-			$table->string("type_acteur");
+			$table->string("type_acteur")->nullable();
 			$table->string("denomination")->nullable();
 			$table->string("telephone_siege")->nullable();
 			$table->string("source_financement")->nullable();
-			$table->string("adresse_siege")->nullable(); 
-			$table->string("autre_secteur_intervention")->nullable();
+			$table->string("adresse_siege")->nullable();
+			//$table->string("autre_secteur_intervention")->nullable();
+			$table->string("secteur_intervention")->nullable();
 			$table->string("paquet_sante_intervention")->nullable();
 			$table->string("region_intervention")->nullable();
 			$table->string("departement_intervention")->nullable();
@@ -26,10 +27,12 @@ class CreateStructuresTable extends Migration {
 			$table->string("email_siege")->nullable();
 			$table->string("latitude")->nullable();
 			$table->string("longitude")->nullable();
+			$table->string("altitude")->nullable();
 			$table->string("prenom_responsable")->nullable();
 			$table->string("nom_responsable")->nullable();
 			$table->string("telephone_responsable")->nullable();
 			$table->string("email_responsable")->nullable();
+			$table->string("fonction_responsable")->nullable();
 			$table->timestamps();
 		});
 	}
