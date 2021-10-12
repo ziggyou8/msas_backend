@@ -24,7 +24,7 @@ class StructureResource extends JsonResource
             "type_acteur" => $this->type_acteur,
             "source_financement"=>$this->source_financement,
             "telephone_siege"=>$this->telephone_siege,
-            "autre_secteur_intervention"=>$this->autre_secteur_intervention,
+            "secteur_intervention"=>$this->secteur_intervention,
             "paquet_sante_intervention"=>$this->paquet_sante_intervention,
             "region_intervention"=>$this->region_intervention,
             "departement_intervention"=>$this->departement_intervention,
@@ -37,11 +37,13 @@ class StructureResource extends JsonResource
             "email_siege"=>$this->email_siege,
             "latitude"=>$this->latitude,
             "longitude"=>$this->longitude,
+            "altitude"=>$this->altitude,
             "prenom_responsable"=>$this->prenom_responsable,
             "nom_responsable"=>$this->nom_responsable,
             "telephone_responsable"=>$this->telephone_responsable,
             "email_responsable"=>$this->email_responsable,
             "telephone_responsable"=>$this->telephone_responsable,
+            "fonction_responsable"=>$this->fonction_responsable,
              "infos_suplementaires"=>$this->acteurType()
            // "acteur_".strtolower($this->type_acteur)=>$this->acteur
         ];

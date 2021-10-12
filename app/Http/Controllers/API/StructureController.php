@@ -19,6 +19,7 @@ use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Utils\UploadUtil;
 use App\Enums\TypeUpload;
+use Illuminate\Support\Facades\Mail;
 
 class StructureController extends BaseController
 {
@@ -234,15 +235,26 @@ class StructureController extends BaseController
      */
     public function store(Request $request)
     {
+       /*  try {
+            $userInputs["prenom"]=$request->prenom_responsable;
+            $userInputs["nom"]=$request->nom_responsable;
+            $userInputs["telephone"]=$request->telephone_responsable;
+            $userInputs["email"]=$request->email_responsable;
+            $userInputs["password"] = bcrypt("passer");
+            $this->userRepository->store($userInputs);
 
-        try {
+        } catch (\Throwable $e) {
+            return $this->sendError("Erreur, cet adresse email est déjà utilisé");
+        } */
+        
         //les input partagés par les types d"acteur (step 1)
         $firstStepInputs["denomination"] = $request->denomination;
         $firstStepInputs["type_acteur"] = $request->type_acteur;
         $firstStepInputs["adresse_siege"] = $request->adresse_siege;
         $firstStepInputs["source_financement"]=$request->source_financement;
         $firstStepInputs["telephone_siege"]=$request->telephone_siege;
-        $firstStepInputs["autre_secteur_intervention"]=$request->autre_secteur_intervention;
+        //$firstStepInputs["autre_secteur_intervention"]=$request->autre_secteur_intervention;
+        $firstStepInputs["secteur_intervention"]=$request->secteur_intervention;
         $firstStepInputs["paquet_sante_intervention"]=$request->paquet_sante_intervention;
         $firstStepInputs["region_intervention"]=$request->region_intervention;
         $firstStepInputs["departement_intervention"]=$request->departement_intervention;
@@ -254,34 +266,33 @@ class StructureController extends BaseController
         $firstStepInputs["email_siege"]=$request->email_siege;
         $firstStepInputs["latitude"]=$request->latitude;
         $firstStepInputs["longitude"]=$request->longitude;
+        $firstStepInputs["altitude"]=$request->altitude;
         $firstStepInputs["prenom_responsable"]=$request->prenom_responsable;
+        $firstStepInputs["fonction_responsable"]=$request->fonction_responsable;
         $firstStepInputs["nom_responsable"]=$request->nom_responsable;
         $firstStepInputs["telephone_responsable"]=$request->telephone_responsable;
         $firstStepInputs["email_responsable"]=$request->email_responsable;
         $structure = $this->structureRepository->store($firstStepInputs);
          
+        /* $details = [
+            'title' => 'Mail from ItSolutionStuff.com',
+            'body' => 'This is for testing email using smtp'
+        ];
        
-            $userInputs["prenom"]=$request->prenom_responsable;
-            $userInputs["nom"]=$request->nom_responsable;
-            $userInputs["telephone"]=$request->telephone_responsable;
-            $userInputs["email"]=$request->email_responsable;
-            $userInputs["password"] = bcrypt("passer");
-            $this->userRepository->store($userInputs);
-
-
-        } catch (\Throwable $e) {
-            return $this->sendError("Erreur, cet adresse email est déjà utilisé");
-        }
+        Mail::to('myrespect4all@gmail.com')->send(new \App\Mail\CreatedAcountMailer($details)); */
+        
         //Checker le type d"acteur
-        switch ($request["type_acteur"]) {
+        switch ($request["source_financement"]) {
             //inputs pour les ONG et PTF
             case TypeActeur::ONG :
                 $ongInputs["structure_id"] = $structure->id;
                 $ongInputs["numero_agrement"] = $request->numero_agrement; 
                 $ongInputs["type"] = $request->type;
-                $ongInputs["accord_siege"] = $request->accord_siege;
+                //$ongInputs["accord_siege"] = $request->accord_siege;
+                if ($request->hasFile('accord_siege')) {
+                    $ongInputs['accord_siege'] = $this->uploadUtil->traiterFile($request->file('accord_siege'), TypeUpload::PTF);
+                }
                 $ongInputs["bailleur"] = $request->bailleur;
-               // $ongInputs["sous_recipiandaire"] = $request->sous_recipiandaire;
                 $ongInputs["date_debut_intervention"] = $request->date_debut_intervention;
                 $ongInputs["date_fin_intervention"] = $request->date_fin_intervention;
                 $ongInputs["email"] = $request->email;
@@ -327,6 +338,9 @@ class StructureController extends BaseController
                 if ($request->hasFile('projection_annee_n_plus1_par_pilier')) {
                     $ptfInputs['projection_annee_n_plus1_par_pilier'] = $this->uploadUtil->traiterFile($request->file('projection_annee_n_plus1_par_pilier'), TypeUpload::PTF);
                 }
+                if ($request->hasFile('projection_annee_n_plus2_par_pilier')) {
+                    $ptfInputs['projection_annee_n_plus2_par_pilier'] = $this->uploadUtil->traiterFile($request->file('projection_annee_n_plus2_par_pilier'), TypeUpload::PTF);
+                }
                 $this->ptfRepository->store($ptfInputs);
                 break;
                 //EPS attribut
@@ -342,6 +356,9 @@ class StructureController extends BaseController
                     $EPS_Inputs["perspective"] = $request->perspective;
                     $EPS_Inputs["mecanisme_financement"] = $request->mecanisme_financement;
                     $EPS_Inputs["documents"] = $request->documents;
+                    if ($request->hasFile('documents')) {
+                        $EPS_Inputs['documents'] = $this->uploadUtil->traiterFile($request->file('documents'), TypeUpload::PTF);
+                    }
                     $this->epsRepository->store($EPS_Inputs);
                     break;
                 case TypeActeur::SPS :
@@ -357,7 +374,10 @@ class StructureController extends BaseController
                         $SPS_Inputs["opportunites"] = $request->opportunites;
                         $SPS_Inputs["perspective"] = $request->perspective;
                         $SPS_Inputs["mecanisme_financement"] = $request->mecanisme_financement;
-                        $SPS_Inputs["documents"] = $request->documents;
+                       // $SPS_Inputs["documents"] = $request->documents;
+                        if ($request->hasFile('documents')) {
+                            $ptfInputs['documents'] = $this->uploadUtil->traiterFile($request->file('documents'), TypeUpload::PTF);
+                        }
                         $this->spsRepository->store($SPS_Inputs);
                         break;
                 //inputs pour Etat
@@ -404,7 +424,10 @@ class StructureController extends BaseController
                         $CtInputs["montant_fdd_mobilise_sante"] = $request->montant_fdd_mobilise_sante;
                         $CtInputs["montant_fonds_propre_sante"] = $request->montant_fonds_propre_sante;
                         $CtInputs["montant_fecl_mobilise_sante"] = $request->montant_fecl_mobilise_sante;
-                        $CtInputs["accord_de_siege"] = $request->accord_de_siege;
+                       // $CtInputs["accord_de_siege"] = $request->accord_de_siege;
+                        if ($request->hasFile('accord_siege')) {
+                            $CtInputs['accord_siege'] = $this->uploadUtil->traiterFile($request->file('accord_siege'), TypeUpload::PTF);
+                        }
                         $this->collectiviteTerritorialeRepository->store($CtInputs);
                         break;
                     default:
@@ -684,5 +707,13 @@ class StructureController extends BaseController
         $structure = Structure::find($id);
         $structure->delete();
         return $this->sendResponse([], "Structure supprimé avec succés.");
+    }
+
+
+    public function getacteur($type)
+    {
+        $structures = $this->structureRepository->getStructureByTypeActeur($type);
+        //$structures = $this->structureRepository->getData();
+        return $this->sendResponse(StructureResource::collection($structures), "succés.");
     }
 }

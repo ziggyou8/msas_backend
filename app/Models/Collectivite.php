@@ -23,6 +23,7 @@ class Collectivite extends Model
     public $timestamps = false;
 
     protected $fillable = array("code", "nom", "statut", "type_collectivite", "parent_code");
+    
 
     public function parent()
     {

@@ -14,7 +14,7 @@ class CollectiviteTableSeeder extends Seeder
      */
     public function run()
     {
-        $sql = file_get_contents(database_path() . '/collectivitess.sql');
+        $sql = file_get_contents(database_path() . '/msasdb.sql');
 
         DB::statement($sql);
     }

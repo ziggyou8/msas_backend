@@ -13,6 +13,10 @@ class StructureRepository extends ResourceRepository
         $this->model = $structure;
     }
 
-
+    
+    public function getStructureByTypeActeur($type)
+    {
+        return $this->model->byTypeActeur($type)->get();
+    }
 
 }

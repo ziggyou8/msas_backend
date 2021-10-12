@@ -9,8 +9,10 @@ use Illuminate\Support\Str;
 
 class UploadUtil
 {
+    const DEFAULT_PATH = "/general";
     const AVATAR_USER_PATH = "/images/users/";
     const PTF = "/structures/ptf/";
+    const EPS = "/structures/eps/";
 
     protected $repertoire;
 
@@ -55,6 +57,9 @@ class UploadUtil
         switch ($mode) {
             case TypeUpload::PTF:
                 return $this->repertoire = self::PTF;
+                break;
+            case TypeUpload::EPS:
+                return $this->repertoire = self::EPS;
                 break;
             default:
                 return self::DEFAULT_PATH;
