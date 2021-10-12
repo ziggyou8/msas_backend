@@ -378,6 +378,7 @@ class StructureController extends BaseController
                         if ($request->hasFile('documents')) {
                             $ptfInputs['documents'] = $this->uploadUtil->traiterFile($request->file('documents'), TypeUpload::PTF);
                         }
+                        
                         $this->spsRepository->store($SPS_Inputs);
                         break;
                 //inputs pour Etat
