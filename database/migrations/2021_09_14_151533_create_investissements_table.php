@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEpsTable extends Migration
+class CreateInvestissementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class CreateEpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('eps', function (Blueprint $table) {
+        Schema::create('investissements', function (Blueprint $table) {
             $table->increments("id");
-			$table->integer("structure_id")->unsigned();
-			$table->string("mecanisme_financement")->nullable();
-			$table->string("documents")->nullable();
-			$table->timestamps();
+            $table->string("libelle");
+            $table->string("montant");
+			$table->integer("structure_id")->unsigned()->nullable();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +29,6 @@ class CreateEpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('eps');
+        Schema::dropIfExists('investissements');
     }
 }
