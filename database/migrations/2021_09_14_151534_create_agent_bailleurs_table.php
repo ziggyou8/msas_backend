@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateEpsTable extends Migration
+class CreateAgentBailleursTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateEpsTable extends Migration
      */
     public function up()
     {
-        Schema::create('eps', function (Blueprint $table) {
+        Schema::create('agent_bailleurs', function (Blueprint $table) {
             $table->increments("id");
-			$table->integer("structure_id")->unsigned();
-			$table->string("mecanisme_financement")->nullable();
-			$table->string("documents")->nullable();
-			$table->timestamps();
+			$table->integer("ong_id")->unsigned()->nullable();
+			$table->integer("ptf_id")->unsigned()->nullable();
         });
     }
 
@@ -29,6 +27,6 @@ class CreateEpsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('eps');
+        Schema::dropIfExists('agent_bailleurs');
     }
 }

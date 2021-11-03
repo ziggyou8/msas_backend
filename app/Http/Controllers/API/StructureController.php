@@ -19,6 +19,10 @@ use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Utils\UploadUtil;
 use App\Enums\TypeUpload;
+use App\Models\AxeIntervention;
+use App\Models\Investissement;
+use App\Models\Pilier;
+use App\Models\Projet;
 use Illuminate\Support\Facades\Mail;
 
 class StructureController extends BaseController
@@ -235,25 +239,16 @@ class StructureController extends BaseController
      */
     public function store(Request $request)
     {
-       /*  try {
-            $userInputs["prenom"]=$request->prenom_responsable;
-            $userInputs["nom"]=$request->nom_responsable;
-            $userInputs["telephone"]=$request->telephone_responsable;
-            $userInputs["email"]=$request->email_responsable;
-            $userInputs["password"] = bcrypt("passer");
-            $this->userRepository->store($userInputs);
-
-        } catch (\Throwable $e) {
-            return $this->sendError("Erreur, cet adresse email est déjà utilisé");
-        } */
+     
         
         //les input partagés par les types d"acteur (step 1)
         $firstStepInputs["denomination"] = $request->denomination;
         $firstStepInputs["type_acteur"] = $request->type_acteur;
+        $firstStepInputs["specialite"] = $request->specialite;
+        //$firstStepInputs["autre_specialite"] = $request->autre_specialite;
         $firstStepInputs["adresse_siege"] = $request->adresse_siege;
         $firstStepInputs["source_financement"]=$request->source_financement;
         $firstStepInputs["telephone_siege"]=$request->telephone_siege;
-        //$firstStepInputs["autre_secteur_intervention"]=$request->autre_secteur_intervention;
         $firstStepInputs["secteur_intervention"]=$request->secteur_intervention;
         $firstStepInputs["paquet_sante_intervention"]=$request->paquet_sante_intervention;
         $firstStepInputs["region_intervention"]=$request->region_intervention;
@@ -343,42 +338,158 @@ class StructureController extends BaseController
                 }
                 $this->ptfRepository->store($ptfInputs);
                 break;
+
                 //EPS attribut
                 case TypeActeur::EPS :
                     $EPS_Inputs["structure_id"] = $structure->id;
-                    $EPS_Inputs["piliers_intervention"] = $request->piliers_intervention;
-                    $EPS_Inputs["mt_prevu_par_pilier"] = $request->mt_prevu_par_pilier;
-                    $EPS_Inputs["mt_mobilise_par_pilier"] = $request->mt_mobilise_par_pilier;
-                    $EPS_Inputs["mt_execute_par_pilier"] = $request->mt_execute_par_pilier;
-                    $EPS_Inputs["investissement_en_cours"] = $request->investissement_en_cours;
-                    $EPS_Inputs["projets"] = $request->projets;
-                    $EPS_Inputs["opportunites"] = $request->opportunites;
-                    $EPS_Inputs["perspective"] = $request->perspective;
                     $EPS_Inputs["mecanisme_financement"] = $request->mecanisme_financement;
-                    $EPS_Inputs["documents"] = $request->documents;
                     if ($request->hasFile('documents')) {
                         $EPS_Inputs['documents'] = $this->uploadUtil->traiterFile($request->file('documents'), TypeUpload::PTF);
                     }
                     $this->epsRepository->store($EPS_Inputs);
+                        //Pilier & Axe Loops
+                        $piliers =[];
+                        foreach ($request->piliers as $pilier) {
+                            $decodedPilier = json_decode($pilier);
+                            if($decodedPilier->pilier !== ""){
+                                array_push($piliers, $decodedPilier);
+                            }
+                        }
+                        foreach ($piliers as $pilier) {
+                            $newPilier = Pilier::create([
+                                'libelle' => $pilier->pilier,
+                                'monnaie' => $request->monnaie,
+                                'structure_id' =>$structure->id,
+                            ]);
+                        
+                            foreach ($pilier->axe as $axe) {
+                            if($axe->libelle !== ""){
+                                AxeIntervention::create([
+                                    'pilier_id' => $newPilier->id,
+                                    'libelle' => $axe->libelle,
+                                    'montant_prevu' => $axe->montant_prevu,
+                                    'montant_mobilise' => $axe->montant_mobilise,
+                                    'montant_execute' => $axe->montant_execute,
+                                ]);
+                            }
+                            }
+                        }
+                    
+                        //Investissement
+                        $investissements =[];
+                        foreach ($request->investissements as $investissement) {
+                        $decodedInvest = json_decode($investissement);
+                            if($decodedInvest->libelle !== "" && $decodedInvest->montant !==""){
+                                array_push($investissements, $decodedInvest);
+                            }
+                        }
+
+                        foreach ($investissements as $invest) {
+                        $newInvest = Investissement::create([
+                                'libelle' => $invest->libelle,
+                                'montant' => $invest->montant,
+                                'structure_id' => $structure->id,
+                            ]);
+                        }
+
+                        //Projets
+                        $projets =[];
+                        foreach ($request->projets as $projet) {
+                        $decodedProjet = json_decode($projet);
+                            if($decodedProjet->libelle !== ""){
+                                array_push($projets, $decodedProjet);
+                            }
+                        }
+
+                        foreach ($projets as $projet) {
+                        $newProjet = Projet::create([
+                                'libelle' => $projet->libelle,
+                                'perspective' => $projet->perspective,
+                                'opportunite' => $projet->opportunite,
+                                'structure_id' => $structure->id,
+                            ]);
+                        }
                     break;
                 case TypeActeur::SPS :
                         $SPS_Inputs["structure_id"] = $structure->id;
-                        $SPS_Inputs["piliers_intervention"] = $request->piliers_intervention;
                         $SPS_Inputs["type_structure"] = $request->type_structure;
                         $SPS_Inputs["numero_autorisation"] = $request->numero_autorisation;
-                        $SPS_Inputs["mt_prevu_par_pilier"] = $request->mt_prevu_par_pilier;
+                        /* $SPS_Inputs["mt_prevu_par_pilier"] = $request->mt_prevu_par_pilier;
                         $SPS_Inputs["mt_mobilise_par_pilier"] = $request->mt_mobilise_par_pilier;
                         $SPS_Inputs["mt_execute_par_pilier"] = $request->mt_execute_par_pilier;
                         $SPS_Inputs["investissement_en_cours"] = $request->investissement_en_cours;
                         $SPS_Inputs["projets"] = $request->projets;
                         $SPS_Inputs["opportunites"] = $request->opportunites;
-                        $SPS_Inputs["perspective"] = $request->perspective;
+                        $SPS_Inputs["perspective"] = $request->perspective; */
                         $SPS_Inputs["mecanisme_financement"] = $request->mecanisme_financement;
                        // $SPS_Inputs["documents"] = $request->documents;
                         if ($request->hasFile('documents')) {
                             $ptfInputs['documents'] = $this->uploadUtil->traiterFile($request->file('documents'), TypeUpload::PTF);
                         }
+                        
                         $this->spsRepository->store($SPS_Inputs);
+                           //Pilier & Axe Loops
+                           $piliers =[];
+                           foreach ($request->piliers as $pilier) {
+                               $decodedPilier = json_decode($pilier);
+                               if($decodedPilier->pilier !== ""){
+                                   array_push($piliers, $decodedPilier);
+                               }
+                           }
+                           foreach ($piliers as $pilier) {
+                               $newPilier = Pilier::create([
+                                   'libelle' => $pilier->pilier,
+                                   'monnaie' => $request->monnaie,
+                                   'structure_id' =>$structure->id,
+                               ]);
+                           
+                               foreach ($pilier->axe as $axe) {
+                               if($axe->libelle !== ""){
+                                   AxeIntervention::create([
+                                       'pilier_id' => $newPilier->id,
+                                       'libelle' => $axe->libelle,
+                                       'montant_prevu' => $axe->montant_prevu,
+                                       'montant_mobilise' => $axe->montant_mobilise,
+                                       'montant_execute' => $axe->montant_execute,
+                                   ]);
+                               }
+                               }
+                           }
+                       
+                           //Investissement
+                           $investissements =[];
+                           foreach ($request->investissements as $investissement) {
+                           $decodedInvest = json_decode($investissement);
+                               if($decodedInvest->libelle !== "" && $decodedInvest->montant !==""){
+                                   array_push($investissements, $decodedInvest);
+                               }
+                           }
+   
+                           foreach ($investissements as $invest) {
+                           $newInvest = Investissement::create([
+                                   'libelle' => $invest->libelle,
+                                   'montant' => $invest->montant,
+                                   'structure_id' => $structure->id,
+                               ]);
+                           }
+   
+                           //Projets
+                           $projets =[];
+                           foreach ($request->projets as $projet) {
+                           $decodedProjet = json_decode($projet);
+                               if($decodedProjet->libelle !== ""){
+                                   array_push($projets, $decodedProjet);
+                               }
+                           }
+   
+                           foreach ($projets as $projet) {
+                           $newProjet = Projet::create([
+                                   'libelle' => $projet->libelle,
+                                   'perspective' => $projet->perspective,
+                                   'opportunite' => $projet->opportunite,
+                                   'structure_id' => $structure->id,
+                               ]);
+                           }
                         break;
                 //inputs pour Etat
                 case TypeActeur::Etat :

@@ -11,7 +11,7 @@ class Structure extends Model
 
     protected $table = "structures";
     public $timestamps = true;
-    protected $fillable = array('type_acteur', 'secteur_intervention', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention", "region_intervention", "departement_intervention", "commune_intervention", "districte_intervention", "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable");
+    protected $fillable = array('type_acteur', 'secteur_intervention', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention", "region_intervention", "departement_intervention", "commune_intervention", "districte_intervention", "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable", "specialite","autre_specialite");
     /* protected $appends = ["acteur"];
     protected $visible = ["acteur"]; */
 

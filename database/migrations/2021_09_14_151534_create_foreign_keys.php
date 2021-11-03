@@ -18,6 +18,38 @@ class CreateForeignKeys extends Migration {
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
+		Schema::table("axe_interventions", function(Blueprint $table) {
+			$table->foreign("pilier_id")->references("id")->on("piliers")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+
+		Schema::table("piliers", function(Blueprint $table) {
+			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+		Schema::table("projets", function(Blueprint $table) {
+			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+
+		Schema::table("investissements", function(Blueprint $table) {
+			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+
+
+		Schema::table("agent_bailleurs", function(Blueprint $table) {
+			$table->foreign("ong_id")->references("id")->on("ongs")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+			$table->foreign("ptf_id")->references("id")->on("ptfs")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
 		Schema::table("sous_recipiandaires", function(Blueprint $table) {
 			$table->foreign("ong_id")->references("id")->on("ongs")
 						->onDelete("cascade")
@@ -123,6 +155,24 @@ class CreateForeignKeys extends Migration {
 		});
 		Schema::table("collertvite_territoriale", function(Blueprint $table) {
 			$table->dropForeign("collertvite_territoriale_structure_id_foreign");
+		});
+		Schema::table("axe_interventions", function(Blueprint $table) {
+			$table->dropForeign("axe_interventions_pilier_id_foreign");
+		});
+
+		Schema::table("agent_bailleurs", function(Blueprint $table) {
+			$table->dropForeign("agent_bailleurs_ong_id_foreign");
+			$table->dropForeign("agent_bailleurs_ptf_id_foreign");
+		});
+
+		Schema::table("piliers", function(Blueprint $table) {
+			$table->dropForeign("piliers_structure_id_foreign");
+		});
+		Schema::table("projets", function(Blueprint $table) {
+			$table->dropForeign("projets_structure_id_foreign");
+		});
+		Schema::table("investissements", function(Blueprint $table) {
+			$table->dropForeign("investissements_structure_id_foreign");
 		});
 	}
 }

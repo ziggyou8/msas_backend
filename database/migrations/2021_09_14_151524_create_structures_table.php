@@ -14,6 +14,8 @@ class CreateStructuresTable extends Migration {
 			$table->string("telephone_siege")->nullable();
 			$table->string("source_financement")->nullable();
 			$table->string("adresse_siege")->nullable();
+			$table->string("specialite")->nullable();
+			$table->string("autre_specilite")->nullable();
 			//$table->string("autre_secteur_intervention")->nullable();
 			$table->string("secteur_intervention")->nullable();
 			$table->string("paquet_sante_intervention")->nullable();

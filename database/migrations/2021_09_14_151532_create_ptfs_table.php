@@ -14,7 +14,7 @@ class CreatePtfsTable extends Migration
     public function up()
     {
         Schema::create("ptfs", function (Blueprint $table) {
-            $table->id();
+            $table->increments("id");
             $table->integer("structure_id")->unsigned();
 			$table->string("type")->nullable();
 			$table->string("pays_nationalite")->nullable();
