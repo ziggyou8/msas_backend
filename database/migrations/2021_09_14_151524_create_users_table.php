@@ -19,8 +19,10 @@ class CreateUsersTable extends Migration
             $table->longText("photo")->nullable();
             $table->string("prenom");
             $table->string("nom");
+            $table->string("fonction")->nullable();
             $table->string("email")->unique();
             $table->string("telephone")->nullable();
+            $table->integer("structure_id")->unsigned()->nullable();
             /* $table->unsignedInteger("structure_id")->nullable();
             $table->foreign("structure_id")->references("id")->on("structures")->onDelete("cascade"); */
             $table->timestamp("email_verified_at")->nullable();

@@ -18,6 +18,16 @@ class CreateForeignKeys extends Migration {
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
+		Schema::table("district_interventions", function(Blueprint $table) {
+			$table->foreign("region_intervention_id")->references("id")->on("region_interventions")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+		Schema::table("region_interventions", function(Blueprint $table) {
+			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
 		Schema::table("axe_interventions", function(Blueprint $table) {
 			$table->foreign("pilier_id")->references("id")->on("piliers")
 						->onDelete("cascade")
@@ -25,7 +35,7 @@ class CreateForeignKeys extends Migration {
 		});
 
 		Schema::table("piliers", function(Blueprint $table) {
-			$table->foreign("structure_id")->references("id")->on("structures")
+			$table->foreign("investissement_id")->references("id")->on("investissements")
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
@@ -37,6 +47,12 @@ class CreateForeignKeys extends Migration {
 
 		Schema::table("investissements", function(Blueprint $table) {
 			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+
+		Schema::table("nature_investissements", function(Blueprint $table) {
+			$table->foreign("axe_intervention_id")->references("id")->on("axe_interventions")
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
@@ -85,7 +101,13 @@ class CreateForeignKeys extends Migration {
 						->onDelete("cascade")
 						->onUpdate("restrict");
 		});
-		Schema::table("user_structures", function(Blueprint $table) {
+
+		Schema::table("users", function(Blueprint $table) {
+			$table->foreign("structure_id")->references("id")->on("structures")
+						->onDelete("cascade")
+						->onUpdate("restrict");
+		});
+		/* Schema::table("user_structures", function(Blueprint $table) {
 			$table->foreign("structure_id")->references("id")->on("structures")
 						->onDelete("cascade")
 						->onUpdate("restrict");
@@ -94,7 +116,7 @@ class CreateForeignKeys extends Migration {
 			$table->foreign("user_id")->references("id")->on("users")
 						->onDelete("cascade")
 						->onUpdate("restrict");
-		});
+		}); */
 		Schema::table("societe_civiles", function(Blueprint $table) {
 			$table->foreign("structure_id")->references("id")->on("structures")
 						->onDelete("cascade")
@@ -141,12 +163,15 @@ class CreateForeignKeys extends Migration {
 		Schema::table("menages", function(Blueprint $table) {
 			$table->dropForeign("menages_structure_id_foreign");
 		});
-		Schema::table("user_structures", function(Blueprint $table) {
+		Schema::table("users", function(Blueprint $table) {
+			$table->dropForeign("users__structure_id_foreign");
+		});
+		/* Schema::table("user_structures", function(Blueprint $table) {
 			$table->dropForeign("user_structures_structure_id_foreign");
 		});
 		Schema::table("user_structures", function(Blueprint $table) {
 			$table->dropForeign("user_structures_user_id_foreign");
-		});
+		}); */
 		Schema::table("societe_civiles", function(Blueprint $table) {
 			$table->dropForeign("societe_civiles_structure_id_foreign");
 		});
@@ -166,13 +191,22 @@ class CreateForeignKeys extends Migration {
 		});
 
 		Schema::table("piliers", function(Blueprint $table) {
-			$table->dropForeign("piliers_structure_id_foreign");
+			$table->dropForeign("piliers_investissement_id_foreign");
 		});
 		Schema::table("projets", function(Blueprint $table) {
 			$table->dropForeign("projets_structure_id_foreign");
 		});
 		Schema::table("investissements", function(Blueprint $table) {
 			$table->dropForeign("investissements_structure_id_foreign");
+		});
+		Schema::table("nature_investissements", function(Blueprint $table) {
+			$table->dropForeign("nature_investissements_axe_intervention_id_foreign");
+		});
+		Schema::table("structure_interventions", function(Blueprint $table) {
+			$table->dropForeign("structure_interventions_region_intervention_id_foreign");
+		});
+		Schema::table("region_interventions", function(Blueprint $table) {
+			$table->dropForeign("region_interventions_structure_id_foreign");
 		});
 	}
 }

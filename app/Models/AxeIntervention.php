@@ -10,5 +10,10 @@ class AxeIntervention extends Model
     use HasFactory;
     protected $table = "axe_interventions";
     public $timestamps = true;
-    protected $fillable = array("pilier_id", "libelle", "montant_prevu", "montant_mobilise", "montant_execute");
+    protected $fillable = array("pilier_id", "libelle"/* , "montant_prevu", "montant_mobilise", "montant_execute" */);
+
+    public function nature()
+    {
+        return $this->hasMany(NatureInvestissement::class);
+    }
 }

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreatePiliersTable extends Migration
+class CreateModeFinancementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreatePiliersTable extends Migration
      */
     public function up()
     {
-        Schema::create('piliers', function (Blueprint $table) {
+        Schema::create('mode_financements', function (Blueprint $table) {
             $table->increments("id");
             $table->string("libelle");
-            $table->string("monnaie");
-			$table->integer("investissement_id")->unsigned()->nullable();
+            $table->string("montant");
+            $table->integer("investissement_id")->unsigned()->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreatePiliersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('piliers');
+        Schema::dropIfExists('mode_financements');
     }
 }

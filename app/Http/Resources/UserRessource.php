@@ -23,7 +23,7 @@ class UserRessource extends JsonResource
             "telephone" => $this->telephone,
             "email" => $this->email,
             "roles"=>$this->getRoleNames(),
-            "structures"=>$this->structures,
+            "structure"=>$this->structure,
             "permission"=>$this->getPermissionsViaRoles()->pluck("name"),
             "created_at" => $this->created_at->format("d/m/Y"),
             "updated_at" => $this->updated_at->format("d/m/Y"),

@@ -15,9 +15,11 @@ class CreateRoleSeeder extends Seeder
     public function run()
     {
         $roles = [
-            "PTF",
-            "ONG",
-            "CT"
+            "SPS Admin",
+            "EPS Admin",
+            "PTF Admin",
+            "ONG Admin",
+            "RSE Admin",
          ];
       
          foreach ($roles as $role) {

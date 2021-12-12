@@ -5,6 +5,9 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\UserRessource;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -386,7 +389,55 @@ class UserController extends BaseController
         $request->role && $user->syncRoles($request->role);
         $request->structure_id && $user->structures()->sync($request->only("structure_id")["structure_id"]);
         
-        return $this->sendResponse(new UserRessource($user), "succés.");
+        return $this->sendResponse(new UserRessource($user), "Modifié avec succès.");
+    }
+
+    public function profileUpdate(Request $request)
+    {
+        DB::beginTransaction();
+        $success = false;
+        try {
+            $user = User::find(Auth::user()->id);
+            $user->photo =  $request->photo ? $request->photo : $user->photo;
+            $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
+            $user->nom =  $request->nom ? $request->nom : $user->nom;
+            $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
+            $user->email = $request->email ? $request->email : $user->email;
+            $user->save(); 
+   
+         $success = true;
+            if ($success) {
+                DB::commit();
+            }
+        return $this->sendResponse(new UserRessource($user), "Profile modifié avec succés.");
+        } catch (\Exception $e) {
+            DB::rollback();
+		    $success = false;
+            return $this->sendError("Erreur! Réessayez svp");
+        }
+    }
+
+
+    public function passwordUpdate(Request $request)
+    {
+       
+        try {
+            $user = User::find(Auth::user()->id);
+
+            if(!Hash::check($request->old_password, $user->password)) {
+                return $this->sendError("Ancien mot de passe incorrect");
+            }
+
+            if ($request->password !== $request->confirm_password ) {
+                return $this->sendError("Les mots de passe ne correspondent pas");
+            }
+            
+            $user->password = $request->password ? bcrypt($request->password ) : $user->password;
+            $user->save(); 
+            return $this->sendResponse(new UserRessource($user), "Mot de passe modifié avec succés.");
+        } catch (\Exception $e) {
+            return $this->sendError("Erreur! Réessayez svp");
+        }
     }
 
     /**

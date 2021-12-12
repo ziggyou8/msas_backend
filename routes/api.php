@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CollectiviteController;
 use App\Http\Controllers\API\DistricteSanitaireController;
+use App\Http\Controllers\API\InvestissementControler;
 use App\Http\Controllers\API\PermissionController;
 use App\Http\Controllers\API\RegisterController;
 use App\Http\Controllers\API\RoleController;
@@ -43,6 +44,8 @@ Route::middleware("auth:api")->group( function () {
     Route::get("v1/users/{id}",[UserController::class, "show"] );
     Route::put("v1/users/{id}",[UserController::class, "update"] ); //?_method=PUT
     Route::post("v1/users",[UserController::class, "store"] );
+    Route::post("v1/users/update_profile",[UserController::class, "profileUpdate"] );
+    Route::post("v1/users/update_password",[UserController::class, "passwordUpdate"] );
     Route::delete("v1/users/{id}",[UserController::class, "destroy"]);
 
     Route::post("v1/financements",[SourceFinancementController::class, "store"]);
@@ -54,9 +57,17 @@ Route::middleware("auth:api")->group( function () {
     Route::get("v1/structures",[StructureController::class, "index"]);
     Route::get("v1/structures/type_acteur/{type}",[StructureController::class, "getacteur"]);
     Route::post("v1/structures",[StructureController::class, "store"]);
+    Route::post("v1/structures/step_1",[StructureController::class, "storeStepOne"]);
+    Route::post("v1/structures/step_2",[StructureController::class, "storeStepTwo"]);
+    Route::post("v1/structures/update_basic_info",[StructureController::class, "basicInfoUpdate"]);
     Route::get("v1/structures/{id}",[StructureController::class, "show"]);
     Route::put("v1/structures/{id}",[StructureController::class, "update"]);
     Route::delete("v1/structures/{id}",[StructureController::class, "destroy"]);
+
+    Route::get("v1/investissements",[InvestissementControler::class, "index"]);
+    Route::get("v1/investissements_by_structure/{id}",[InvestissementControler::class, "investissement_by_structure"]);
+    Route::get("v1/investissements/{id}",[InvestissementControler::class, "show"]);
+
 
     Route::get("v1/roles",[RoleController::class, "index"]);
     Route::get("v1/roles/{id}",[RoleController::class, "show"]);
