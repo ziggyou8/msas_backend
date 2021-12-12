@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
 
 /**
@@ -27,6 +28,14 @@ class User extends Authenticatable
    /*  public function structures(){
         return $this->belongsToMany(Structure::class,"structures_users");
    } */
+
+   public function structure(){
+    return $this->belongsTo(Structure::class);  
+}
+
+/* public function getAuthRoles(){
+    return $this->hasMany(Role::class);  
+} */
    
 
     /**
@@ -38,8 +47,10 @@ class User extends Authenticatable
         "photo",
         "prenom",
         "nom",
+        "fonction",
         "telephone",
         "email",
+        "structure_id",
         "password",
     ];
 
@@ -61,6 +72,8 @@ class User extends Authenticatable
     protected $casts = [
         "email_verified_at" => "datetime",
     ];
+
+    
 
     /**
     * @OA\Property(

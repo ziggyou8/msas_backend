@@ -20,10 +20,18 @@ use Illuminate\Http\Request;
 use App\Utils\UploadUtil;
 use App\Enums\TypeUpload;
 use App\Models\AxeIntervention;
+use App\Models\DistrictIntervention;
 use App\Models\Investissement;
+use App\Models\ModeFinancement;
+use App\Models\NatureInvestissement;
 use App\Models\Pilier;
 use App\Models\Projet;
+use App\Models\RegionIntervention;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
+
+use function PHPUnit\Framework\isEmpty;
 
 class StructureController extends BaseController
 {
@@ -118,6 +126,224 @@ class StructureController extends BaseController
     public function create()
     {
         //
+    }
+
+
+    public function storeStepOne(Request $request)
+    {
+        DB::beginTransaction();
+        $success = false;
+        try {
+        $firstStepInputs["denomination"] = $request->denomination;
+        $firstStepInputs["categorie_rse"] = $request->categorie_rse;
+        $firstStepInputs["type_acteur"] = $request->type_acteur;
+        $firstStepInputs["specialite"] = $request->specialite;
+        $firstStepInputs["autre_specialite"] = $request->autre_specialite;
+        $firstStepInputs["source_financement"]=$request->source_financement;
+        $firstStepInputs["telephone_siege"]=$request->telephone_siege;
+        $firstStepInputs["email_siege"]=$request->email_siege;
+        $firstStepInputs["adresse_siege"] = $request->adresse_siege;
+        $firstStepInputs["telephone_siege"] = $request->telephone_siege;
+        $firstStepInputs["prenom_responsable"]=$request->prenom_responsable;
+        $firstStepInputs["fonction_responsable"]=$request->fonction_responsable;
+        $firstStepInputs["nom_responsable"]=$request->nom_responsable;
+        $firstStepInputs["telephone_responsable"]=$request->telephone_responsable;
+        $firstStepInputs["email_responsable"]=$request->email_responsable;
+        $structure = $this->structureRepository->store($firstStepInputs);
+
+        try {
+            $password = bin2hex(openssl_random_pseudo_bytes(4));
+            $userInputs["prenom"]=$request->prenom_responsable;
+            $userInputs["fonction"]=$request->fonction_responsable;
+            $userInputs["nom"]=$request->nom_responsable;
+            $userInputs["telephone"]=$request->telephone_responsable;
+            $userInputs["email"]=$request->email_responsable;
+            $userInputs["structure_id"]=$structure->id;
+            $userInputs["password"]= bcrypt($password);
+            $pontFocal = $this->userRepository->store($userInputs);
+            switch ($request->source_financement) {
+                case 'SPS':
+                    $pontFocal->assignRole('SPS Admin');
+                    break;
+                case 'EPS':
+                    $pontFocal->assignRole('EPS Admin');
+                    break;
+                case 'PTF':
+                    $pontFocal->assignRole('PTF Admin');
+                    break;
+                case 'ONG':
+                    $pontFocal->assignRole('ONG Admin');
+                    break;
+                case 'RSE':
+                    $pontFocal->assignRole('RSE Admin');
+                    break;
+                default:
+                    break;
+            }
+
+            $details = [
+                'email' => $request->email_responsable,
+                'full_name' => $userInputs["prenom"] .' '. $userInputs["nom"],
+                'structure_name' => $request->denomination,
+                'password' => $password
+                ];
+           
+                try {
+                    Mail::to($userInputs["email"])->send(new \App\Mail\CreatedAcountMailer($details));
+                } catch (\Throwable $th) {
+                    return $this->sendError("Connexion faible!! Essayez de vous reconnecter");
+                }
+
+          
+        } catch (\Exception $e) {
+            return $this->sendError("Email est déjà utilisé");
+        }
+
+        if($request->district_interventions){
+            foreach ($request->district_interventions as $intervention) {
+                $decodedIntervention = json_decode($intervention);
+                $region = RegionIntervention::create([
+                     "nom"=> $decodedIntervention->nom,
+                     "structure_id"=> $structure->id
+                 ]);
+ 
+                 foreach ($decodedIntervention->districts as $district) {
+                     DistrictIntervention::create([
+                         "nom"=> $district->nom,
+                        "region_intervention_id"=> $region->id
+                     ]);
+                 }
+            }
+         }
+         $success = true;
+            if ($success) {
+                DB::commit();
+            }
+        return $this->sendResponse(new StructureResource($structure), "Ajouté avec succés.");
+        } catch (\Exception $e) {
+            DB::rollback();
+		    $success = false;
+            return $this->sendError("Erreur! Réessayez svp");
+        }
+    }
+
+
+    public function storeStepTwo(Request $request)
+    {
+
+     //return json_decode($request->piliers[0])->axe[0]->investissement;
+
+    
+       $structure= Auth::user()->structure;
+
+    
+        DB::beginTransaction();
+        $success = false;
+        //les input partagés par les types d"acteur (step 1)
+        try {
+        /* $structureInputs["adresse_siege"] = $request->adresse_siege;
+        $structureInputs["email_siege"] = $request->email_siege;
+        $structureInputs["telephone_siege"] = $request->telephone_siege;
+        $structureInputs["latitude"] = $request->latitude;
+        $structureInputs["longitude"] = $request->longitude;
+        $structureInputs["altitude"] = $request->altitude; */
+        $structureInputs["mobilisation_ressource"]=$request->mobilisation_ressource;
+        $structureInputs["mis_en_commun_ressource"]=$request->mis_en_commun_ressource;
+        $structureInputs["achat_service"]=$request->achat_service;
+        $this->structureRepository->update( $structure->id, $structureInputs);
+
+        //capture les infos sur la deuxième phase
+        $investissement = Investissement::create([
+            "annee" => $request->annee,
+            "monnaie" => $request->monnaie,
+            "structure_id" => $structure->id
+        ]);
+
+        //Mode de fiance lié à investissement
+        foreach ($request->mode_finance as $mode) {
+            $decodedMode = json_decode($mode);
+            if($decodedMode->montant &&  $decodedMode->libelle !==""){
+                ModeFinancement::create([
+                    "libelle"=>$decodedMode->libelle,
+                    "montant"=>$decodedMode->montant,
+                    "investissement_id"=> $investissement->id
+                ]);
+            }
+        }
+
+        //Pilier->Axe[]->NatureInvestissement[]
+        foreach ($request->piliers as $pilier) {
+            $decodedPilier = json_decode($pilier);
+            if($decodedPilier->pilier !== ""){
+                $newPilier = Pilier::create([
+                    'libelle' => $decodedPilier->pilier,
+                    'monnaie' => $request->monnaie,
+                    'investissement_id' =>$investissement->id,
+                ]);
+                foreach ($decodedPilier->axe as $axe) {
+                    if($axe->libelle !== ""){
+                        $newAxe = AxeIntervention::create([
+                            'pilier_id' => $newPilier->id,
+                            'libelle' => $axe->libelle,
+                        ]);
+                    }
+                
+                    NatureInvestissement::create([
+                        "libelle" => "Investissements",
+                        "montant_prevu" => $axe->investissement->montant_prevu,
+                        "montant_mobilise" => $axe->investissement->montant_mobilise,
+                        "montant_execute" => $axe->investissement->montant_execute,
+                        "axe_intervention_id"=> $newAxe->id
+                    ]);
+                    NatureInvestissement::create([
+                        "libelle" => "Biens et services",
+                        "montant_prevu" => $axe->bien_et_service->montant_prevu,
+                        "montant_mobilise" => $axe->bien_et_service->montant_mobilise,
+                        "montant_execute" => $axe->bien_et_service->montant_execute,
+                        "axe_intervention_id"=> $newAxe->id
+                    ]);
+                
+            }
+            }
+        }
+                                              
+        /* $firstStepInputs["specialite"] = $request->specialite;
+        $firstStepInputs["autre_specialite"] = $request->autre_specialite;
+        $firstStepInputs["source_financement"]=$request->source_financement;
+        $firstStepInputs["telephone_siege"]=$request->telephone_siege;
+        $firstStepInputs["email_siege"]=$request->email_siege;
+        $firstStepInputs["adresse_siege"] = $request->adresse_siege;
+        $firstStepInputs["telephone_siege"] = $request->telephone_siege;
+        $firstStepInputs["prenom_responsable"]=$request->prenom_responsable;
+        $firstStepInputs["fonction_responsable"]=$request->fonction_responsable;
+        $firstStepInputs["nom_responsable"]=$request->nom_responsable;
+        $firstStepInputs["telephone_responsable"]=$request->telephone_responsable;
+        $firstStepInputs["email_responsable"]=$request->email_responsable; */
+        //$structure = $this->structureRepository->store($firstStepInputs);
+
+        $success = true;
+        if ($success) {
+            DB::commit();
+        }
+        return $this->sendResponse(new StructureResource($structure), "Ajouté avec succés.");
+        } catch (\Exception $e) {
+            DB::rollback();
+		    $success = false;
+            return $this->sendError($e->getMessage());
+        }
+    }
+
+    public function basicInfoUpdate(Request $request)
+    {
+        $structureToUpdate = Auth::user()->structure;
+        $basicInfoInputs["adresse_siege"] = $request->adresse_siege;
+        $basicInfoInputs["email_siege"] = $request->email_siege;
+        $basicInfoInputs["telephone_siege"] = $request->telephone_siege;
+        $basicInfoInputs["latitude"] = $request->latitude;
+        $basicInfoInputs["longitude"] = $request->longitude;
+        $basicInfoInputs["altitude"] = $request->altitude;
+        $this->structureRepository->update( $structureToUpdate->id, $basicInfoInputs);
+        return $this->sendResponse(new StructureResource($structureToUpdate), "Modifié avec succès");
     }
 
     /**

@@ -16,9 +16,9 @@ class CreateAxeInterventionsTable extends Migration
         Schema::create('axe_interventions', function (Blueprint $table) {
             $table->increments("id");
             $table->string("libelle");
-            $table->string("montant_prevu");
+            /* $table->string("montant_prevu");
             $table->string("montant_mobilise");
-            $table->string("montant_execute");
+            $table->string("montant_execute"); */
 			$table->integer("pilier_id")->unsigned()->nullable();
             $table->timestamps();
         });

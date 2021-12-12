@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -15,4 +16,16 @@ use Illuminate\Support\Facades\Route;
 
 Route::get("/", function () {
     return view("welcome");
+});
+
+Route::get('/send-mail', function () {
+   
+    $details = [
+        'title' => 'Création compte MSAS',
+        'body' => 'Bonjour, Vous êtes désigné comme piont focal pour gérer l\'activité de la structure POSTE DE SANTE DE PARCELLE'
+    ];
+   
+    Mail::to('myrespect4all@gmail.com')->send(new \App\Mail\CreatedAcountMailer($details));
+   
+   // dd("Email is Sent.");
 });

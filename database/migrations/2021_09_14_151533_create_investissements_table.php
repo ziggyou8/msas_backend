@@ -15,8 +15,8 @@ class CreateInvestissementsTable extends Migration
     {
         Schema::create('investissements', function (Blueprint $table) {
             $table->increments("id");
-            $table->string("libelle");
-            $table->string("montant");
+            $table->string("annee");
+            $table->string("monnaie");
 			$table->integer("structure_id")->unsigned()->nullable();
             $table->timestamps();
         });

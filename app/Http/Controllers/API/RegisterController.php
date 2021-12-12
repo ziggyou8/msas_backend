@@ -193,6 +193,7 @@ class RegisterController extends BaseController
             $success["nom"] =  $user->nom;
             $success["email"] =  $user->email;
             $success["telephone"] =  $user->telephone;
+            $success["roles"] =  $user->getRoleNames();
    
             return $this->sendResponse($success, "User login successfully.");
         } 

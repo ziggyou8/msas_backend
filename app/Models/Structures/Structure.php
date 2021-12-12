@@ -3,6 +3,9 @@
 namespace App\Models\Structures;
 
 use App\Enums\TypeActeur;
+use App\Models\Investissement;
+use App\Models\Pilier;
+use App\Models\RegionIntervention;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +14,7 @@ class Structure extends Model
 
     protected $table = "structures";
     public $timestamps = true;
-    protected $fillable = array('type_acteur', 'secteur_intervention', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention", "region_intervention", "departement_intervention", "commune_intervention", "districte_intervention", "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable", "specialite","autre_specialite");
+    protected $fillable = array('type_acteur', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention",  "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable", "specialite","autre_specialite", "categorie_rse");
     /* protected $appends = ["acteur"];
     protected $visible = ["acteur"]; */
 
@@ -20,6 +23,22 @@ class Structure extends Model
         if ($type)
             return $query->where('source_financement', $type);
         return $query;
+    }
+
+    
+
+    public function regionInterventions()
+    {
+        return $this->hasMany(RegionIntervention::class)->with('districtsInterventions');
+    }
+
+    public function investissements()
+    {
+        return $this->hasMany(Investissement::class)->with(['mode_financement', "piliers"]);
+    }
+    public function piliers()
+    {
+        return $this->hasMany(Pilier::class)->with('axes');
     }
 
     public function ptf()
@@ -68,7 +87,7 @@ class Structure extends Model
 
     public function users()
     {
-        return $this->belongsToMany(User::class);
+        return $this->hasMany(User::class);
     }
 
     public function societeCivile()
@@ -76,46 +95,7 @@ class Structure extends Model
         return $this->hasOne(SocieteCivile::class);
     }
 
-    public function acteurType(){
-        switch ($this->source_financement) {
-            case TypeActeur::PTF:
-                return $this->ptf;
-                break;
-            case TypeActeur::ONG:
-                return $this->ong;
-                break;
-            case TypeActeur::EPS:
-                return $this->eps;
-                break;
-            case TypeActeur::SPS:
-                return $this->sps;
-                break;
-            case TypeActeur::Etat:
-                return $this->etat;
-                break;
-            case TypeActeur::CT:
-                return $this->ct;
-                break;
-            case TypeActeur::SecteurPriveNonSanitaire:
-                return $this->secteurPriveNonSanitaire;
-                break;
-            case TypeActeur::SecteurPriveSanitaire:
-                return $this->secteurPriveSanitaire;
-                break;
-            case TypeActeur::SocieteCivile:
-                return $this->societeCivile;
-                break;
-            default:
-                return;
-                break;
-        }
-    }
-
-    /* public function getActeurAttribute()
-    {
-        return $this->acteurType();
-    } */
-
+    
     
 
 }

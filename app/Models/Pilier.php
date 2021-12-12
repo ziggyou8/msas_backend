@@ -11,5 +11,10 @@ class Pilier extends Model
 
     protected $table = "piliers";
     public $timestamps = true;
-    protected $fillable = array("libelle", "monnaie","structure_id");
+    protected $fillable = array("libelle", "monnaie","investissement_id");
+
+    public function axes()
+    {
+        return $this->hasMany(AxeIntervention::class)->with(["nature"]);
+    }
 }

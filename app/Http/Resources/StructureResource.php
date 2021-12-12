@@ -21,15 +21,11 @@ class StructureResource extends JsonResource
         return [
             "id" => $this->id,
             "denomination" => $this->denomination,
+            "interventions" => $this->regionInterventions,
             "type_acteur" => $this->type_acteur,
             "source_financement"=>$this->source_financement,
             "telephone_siege"=>$this->telephone_siege,
             "secteur_intervention"=>$this->secteur_intervention,
-            "paquet_sante_intervention"=>$this->paquet_sante_intervention,
-            "region_intervention"=>$this->region_intervention,
-            "departement_intervention"=>$this->departement_intervention,
-            "commune_intervention"=>$this->commune_intervention,
-            "districte_intervention"=>$this->districte_intervention,
             "mobilisation_ressource"=>$this->mobilisation_ressource,
             "mis_en_commun_ressource"=>$this->mis_en_commun_ressource,
             "achat_service"=>$this->achat_service,
@@ -44,8 +40,7 @@ class StructureResource extends JsonResource
             "email_responsable"=>$this->email_responsable,
             "telephone_responsable"=>$this->telephone_responsable,
             "fonction_responsable"=>$this->fonction_responsable,
-             "infos_suplementaires"=>$this->acteurType()
-           // "acteur_".strtolower($this->type_acteur)=>$this->acteur
+            "investissements"=>$this->investissements,
         ];
     }
 }
