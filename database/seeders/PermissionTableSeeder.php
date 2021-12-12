@@ -16,15 +16,15 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
             "voir PTF",
-            "Supriler PTF",
+            "Suprimer PTF",
             "Modifier PTF",
             
             "voir ONG",
-            "Supriler ONG",
+            "Suprimer ONG",
             "Modifier ONG",
 
             "voir CT",
-            "Supriler CT",
+            "Suprimer CT",
             "Modifier CT",
          ];
       
