@@ -22,6 +22,7 @@ class UserRessource extends JsonResource
             "nom" => $this->nom,
             "telephone" => $this->telephone,
             "email" => $this->email,
+            "actif" => $this->actif,
             "roles"=>$this->getRoleNames(),
             "structure"=>$this->structure,
             "permission"=>$this->getPermissionsViaRoles()->pluck("name"),

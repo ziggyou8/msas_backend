@@ -56,7 +56,7 @@ class UserController extends BaseController
 
     public function index()
     {
-        $users = User::all();
+        $users = User::all()->where('id','!=', Auth::user()->id);
        // $users = User::whereDoesntHave("admin")->get();
     
         return $this->sendResponse(UserRessource::collection($users), "succés.");

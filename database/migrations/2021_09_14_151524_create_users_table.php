@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration
             $table->string("fonction")->nullable();
             $table->string("email")->unique();
             $table->string("telephone")->nullable();
+            $table->boolean("actif")->default(1);
             $table->integer("structure_id")->unsigned()->nullable();
             /* $table->unsignedInteger("structure_id")->nullable();
             $table->foreign("structure_id")->references("id")->on("structures")->onDelete("cascade"); */
