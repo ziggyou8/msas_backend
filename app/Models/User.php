@@ -33,6 +33,10 @@ class User extends Authenticatable
     return $this->belongsTo(Structure::class);  
 }
 
+public function estActif(){
+    return $this->actif ? 'actif' : 'inactif';  
+}
+
 /* public function getAuthRoles(){
     return $this->hasMany(Role::class);  
 } */

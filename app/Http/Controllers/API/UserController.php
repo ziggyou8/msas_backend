@@ -62,6 +62,14 @@ class UserController extends BaseController
         return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
 
+    public function est_actif($id)
+    {
+        $user = User::find($id);
+        $user->actif =!$user->actif;
+        $user->save();
+       return $this->sendResponse(new UserRessource($user),  $user->actif ? 'Utilisateur activé avec succés.' : 'Utilisateur désactivé avec succés.');
+    }
+
 
     /**
      * Store a newly created resource in storage.
