@@ -42,6 +42,7 @@ Route::middleware("auth:api")->group( function () {
     Route::get("v1/users",[UserController::class, "index"] );
     Route::get("v1/user",[UserController::class, "get_current_user"] );
     Route::get("v1/users/{id}",[UserController::class, "show"] );
+    Route::get("v1/users_by_structure/{id}",[UserController::class, "users_by_structure"] );
     Route::put("v1/users/{id}",[UserController::class, "update"] ); //?_method=PUT
     Route::post("v1/users",[UserController::class, "store"] );
     Route::get("v1/users/status/{id}",[UserController::class, "est_actif"] );
@@ -70,6 +71,7 @@ Route::middleware("auth:api")->group( function () {
     //2 new routes for investissement(validation & rejection)
     Route::get("v1/investissements_validation/{id}",[InvestissementControler::class, "investissement_validation"]);
     Route::get("v1/investissements_rejection/{id}",[InvestissementControler::class, "investissement_rejection"]);
+
     Route::get("v1/investissements/{id}",[InvestissementControler::class, "show"]);
     Route::post("v1/structures/update_investissement",[StructureController::class, "updateStepTwo"]);
     Route::delete("v1/investissements/pilier/axe/{id}",[StructureController::class, "supprimerAxe"]);

@@ -25,6 +25,7 @@ class UserRessource extends JsonResource
             "email" => $this->email,
             "actif" => $this->actif,
             "status"=>$this->estActif(),
+            /* "roles"=> [Auth::user()->roles[0]["libelle"], Auth::user()->roles[0]["name"]], */
             "roles"=> [Auth::user()->roles[0]["libelle"], Auth::user()->roles[0]["name"]],
             "structure"=>$this->structure,
             "permission"=>$this->getPermissionsViaRoles()->pluck("name"),

@@ -192,13 +192,23 @@ class UserController extends BaseController
         if($validator->fails()){
             return $this->sendError("Validation Error.", $validator->errors());       
         }
-          
+
         $user = User::create($input);
-        $request->role && $user->assignRole($request->role);
-        $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
+        if (Auth::user()->roles[0]->name === "Admin_DPRS" ) {
+            $user->structure_id = $request->structure_id || null;
+            $user->assignRole($request->role);
+            $user->save();
+        }
+         else{
+            $user->structure_id = Auth::user()->structure_id;
+            $user->assignRole("Point_focal");
+            $user->save();
+        }
 
        /*  if($request->structure_id){
             $user->structures()->attach($request->only("structure_id")["structure_id"]);
+
+            $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
         } */
 
         return $this->sendResponse(new UserRessource($user), "Utilisateur ajouté avec succés.");
@@ -263,6 +273,13 @@ class UserController extends BaseController
             return $this->sendError("Cet utilisateur n'existe pas");
           }
       
+    }
+
+    public function users_by_structure($id)
+    {
+        $users = User::where('structure_id', $id)->get();
+
+        return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
 
     /**
