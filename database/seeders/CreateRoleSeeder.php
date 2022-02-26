@@ -15,15 +15,18 @@ class CreateRoleSeeder extends Seeder
     public function run()
     {
         $roles = [
-            "SPS Admin",
-            "EPS Admin",
-            "PTF Admin",
-            "ONG Admin",
-            "RSE Admin",
+          "adminStructure"  =>   [
+              "name" => "Admin_structure",
+              "libelle" => "Admin structure",
+             ],
+          "PointFocal"  => [
+                "name" => "Point_focal",
+                "libelle" => "Point Focal",
+             ],
          ];
       
          foreach ($roles as $role) {
-              Role::create(["name" => $role]);
+              Role::create(["name" => $role["name"], "libelle" => $role["libelle"]]);
          }
     }
 }

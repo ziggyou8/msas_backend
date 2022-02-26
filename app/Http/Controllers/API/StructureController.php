@@ -161,7 +161,8 @@ class StructureController extends BaseController
             $userInputs["structure_id"]=$structure->id;
             $userInputs["password"]= bcrypt($password);
             $pontFocal = $this->userRepository->store($userInputs);
-            switch ($request->source_financement) {
+            $pontFocal->assignRole('Admin_structure');
+           /*  switch ($request->source_financement) {
                 case 'SPS':
                     $pontFocal->assignRole('SPS Admin');
                     break;
@@ -179,7 +180,7 @@ class StructureController extends BaseController
                     break;
                 default:
                     break;
-            }
+            } */
 
             $details = [
                 'email' => $request->email_responsable,
@@ -233,7 +234,15 @@ class StructureController extends BaseController
 
         
      //return json_decode($request->piliers[0])->axe[0]->investissement;
+       
 
+        function getStatut (){
+            $statuts =[
+                "Admin_structure" => "Prévalider",
+                "Point_focal" => "Enregistrer"
+            ];
+            return $statuts[Auth::user()->roles[0]->name];
+        }
     
        $structure= Auth::user()->structure;
 
@@ -252,11 +261,13 @@ class StructureController extends BaseController
         $structureInputs["mis_en_commun_ressource"]=$request->mis_en_commun_ressource;
         $structureInputs["achat_service"]=$request->achat_service;
         $this->structureRepository->update( $structure->id, $structureInputs);
-
+        Auth::user()->roles[0]->name;
+        $roes=[];
         //capture les infos sur la deuxième phase
         $investissement = Investissement::create([
             "annee" => $request->annee,
             "monnaie" => $request->monnaie,
+            "statut" => getStatut(),
             "structure_id" => $structure->id
         ]);
 
