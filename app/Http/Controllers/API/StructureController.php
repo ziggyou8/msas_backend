@@ -238,7 +238,7 @@ class StructureController extends BaseController
 
         function getStatut (){
             $statuts =[
-                "Admin_structure" => "Prévalider",
+                "Admin_structure" => "En attente de validation",
                 "Point_focal" => "Enregistrer"
             ];
             return $statuts[Auth::user()->roles[0]->name];

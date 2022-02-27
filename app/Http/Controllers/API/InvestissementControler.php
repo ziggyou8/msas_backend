@@ -46,7 +46,7 @@ class InvestissementControler extends BaseController
             $statuts =[
                 "Admin_DPRS" => "Valider",
                 "Admin_structure" => "Prévalider",
-                "Point_focal" => "Enregistrer",
+                "Point_focal" => "En attente de validation",
             ];
             return $statuts[Auth::user()->roles[0]->name];
         }
