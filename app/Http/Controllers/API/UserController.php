@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -181,8 +182,8 @@ class UserController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-        $input["password"] = bcrypt("passer");
-
+        $password = bin2hex(openssl_random_pseudo_bytes(4));
+        $input["password"] = bcrypt($password);
         $validator = Validator::make($input, [
             "prenom" => "required",
             "nom" => "required",
@@ -204,6 +205,19 @@ class UserController extends BaseController
             $user->assignRole("Point_focal");
             $user->save();
         }
+
+        $details = [
+            'email' => $request->email,
+            'full_name' =>  $user->prenom .' '.  $user->nom,
+            'structure_name' => $user->structure->denomination,
+            'password' => $password
+            ];
+       
+            try {
+                Mail::to($user->email)->send(new \App\Mail\CreatedAcountMailer($details));
+            } catch (\Throwable $th) {
+                return $this->sendError("Connexion faible!! Essayez de vous reconnecter");
+            }
 
        /*  if($request->structure_id){
             $user->structures()->attach($request->only("structure_id")["structure_id"]);

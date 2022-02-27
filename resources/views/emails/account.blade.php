@@ -5,7 +5,7 @@
 </head>
 <body>
     <div class="border">
-        <p>Compte sur la plateforme MSAS</p>
+        <p>Compte pour la plateforme numérique de suivi du financement de la santé au Sénégal</p>
         <p>Bonjour <strong>{{ $details['full_name'] }}</strong>,</p>
         <p>
             Vous êtes désigné comme point focal pour la structure {{ $details['structure_name'] }}
