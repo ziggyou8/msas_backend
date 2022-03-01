@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 use Spatie\Permission\Models\Role;
 
@@ -60,6 +61,14 @@ class UserController extends BaseController
        // $users = User::whereDoesntHave("admin")->get();
     
         return $this->sendResponse(UserRessource::collection($users), "succés.");
+    }
+
+    public function est_actif($id)
+    {
+        $user = User::find($id);
+        $user->actif =!$user->actif;
+        $user->save();
+       return $this->sendResponse(new UserRessource($user),  $user->actif ? 'Utilisateur activé avec succés.' : 'Utilisateur désactivé avec succés.');
     }
 
 
@@ -173,8 +182,8 @@ class UserController extends BaseController
     public function store(Request $request)
     {
         $input = $request->all();
-        $input["password"] = bcrypt("passer");
-
+        $password = bin2hex(openssl_random_pseudo_bytes(4));
+        $input["password"] = bcrypt($password);
         $validator = Validator::make($input, [
             "prenom" => "required",
             "nom" => "required",
@@ -184,13 +193,36 @@ class UserController extends BaseController
         if($validator->fails()){
             return $this->sendError("Validation Error.", $validator->errors());       
         }
-          
+
         $user = User::create($input);
-        $request->role && $user->assignRole($request->role);
-        $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
+        if (Auth::user()->roles[0]->name === "Admin_DPRS" ) {
+            $user->structure_id = $request->structure_id || null;
+            $user->assignRole($request->role);
+            $user->save();
+        }
+         else{
+            $user->structure_id = Auth::user()->structure_id;
+            $user->assignRole("Point_focal");
+            $user->save();
+        }
+
+        $details = [
+            'email' => $request->email,
+            'full_name' =>  $user->prenom .' '.  $user->nom,
+            'structure_name' => $user->structure->denomination,
+            'password' => $password
+            ];
+       
+            try {
+                Mail::to($user->email)->send(new \App\Mail\CreatedAcountMailer($details));
+            } catch (\Throwable $th) {
+                return $this->sendError("Connexion faible!! Essayez de vous reconnecter");
+            }
 
        /*  if($request->structure_id){
             $user->structures()->attach($request->only("structure_id")["structure_id"]);
+
+            $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
         } */
 
         return $this->sendResponse(new UserRessource($user), "Utilisateur ajouté avec succés.");
@@ -255,6 +287,13 @@ class UserController extends BaseController
             return $this->sendError("Cet utilisateur n'existe pas");
           }
       
+    }
+
+    public function users_by_structure($id)
+    {
+        $users = User::where('structure_id', $id)->get();
+
+        return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
 
     /**

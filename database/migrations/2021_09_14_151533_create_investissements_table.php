@@ -17,6 +17,7 @@ class CreateInvestissementsTable extends Migration
             $table->increments("id");
             $table->string("annee");
             $table->string("monnaie");
+			$table->string("statut")->nullable();
 			$table->integer("structure_id")->unsigned()->nullable();
             $table->timestamps();
         });

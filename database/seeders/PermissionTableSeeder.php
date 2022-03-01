@@ -15,17 +15,27 @@ class PermissionTableSeeder extends Seeder
     public function run()
     {
         $permissions = [
-            "voir PTF",
-            "Suprimer PTF",
-            "Modifier PTF",
-            
-            "voir ONG",
-            "Suprimer ONG",
-            "Modifier ONG",
+            "Ajouter structure",
+            "Voir list structure",
+            "Suprimer structure",
+            "Modifier structure",
 
-            "voir CT",
-            "Suprimer CT",
-            "Modifier CT",
+            "Ajouter investissement",
+            "Modifier investissement",
+            "Voir list investissement",
+            "Valider investissement",
+            "Rejetter investissement",
+
+            "Ajouter utilisateur",
+            "Ajouter point focal",
+            "Modifier utilisateur",
+            "Voir list utilisateur",
+            "Suprimer utilisateur",
+            "Activer utilisateur",
+
+             "Modifier role",
+
+            
          ];
       
          foreach ($permissions as $permission) {

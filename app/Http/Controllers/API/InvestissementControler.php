@@ -7,6 +7,7 @@ use App\Http\Resources\InvestissementResource;
 use App\Models\Investissement;
 use App\Repositories\InvestissementRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class InvestissementControler extends BaseController
 {
@@ -38,6 +39,43 @@ class InvestissementControler extends BaseController
 
         return $this->sendResponse(InvestissementResource::collection($investissements), "succés.");
     }
+
+    public function investissement_validation($id)
+    {
+        function getStatutValidation (){
+            $statuts =[
+                "Admin_DPRS" => "Valider",
+                "Admin_structure" => "Prévalider",
+                "Point_focal" => "En attente de validation",
+            ];
+            return $statuts[Auth::user()->roles[0]->name];
+        }
+
+        $investissements = Investissement::where('structure_id', $id)->first();
+        $investissements->statut = getStatutValidation();
+        $investissements->save();
+        return $this->sendResponse(new InvestissementResource($investissements), "succés.");
+    }
+
+    public function investissement_rejection($id)
+    {
+        function getStatutRejection (){
+            $statuts =[
+                "Admin_DPRS" => "En attente de validation",
+                "Admin_structure" => "Enregistrer",               
+            ];
+            return $statuts[Auth::user()->roles[0]->name];
+        }
+
+        $investissements = Investissement::where('structure_id', $id)->first();
+        $investissements->statut = getStatutRejection();
+        $investissements->save();
+
+        return $this->sendResponse(new InvestissementResource($investissements), "succés.");
+    }
+
+
+    
     
 
 

@@ -44,6 +44,7 @@ Route::middleware("auth:api")->group( function () {
     Route::get("v1/users/{id}",[UserController::class, "show"] );
     Route::put("v1/users/{id}",[UserController::class, "update"] ); //?_method=PUT
     Route::post("v1/users",[UserController::class, "store"] );
+    Route::get("v1/users/status/{id}",[UserController::class, "est_actif"] );
     Route::post("v1/users/update_profile",[UserController::class, "profileUpdate"] );
     Route::post("v1/users/update_password",[UserController::class, "passwordUpdate"] );
     Route::delete("v1/users/{id}",[UserController::class, "destroy"]);
@@ -66,7 +67,14 @@ Route::middleware("auth:api")->group( function () {
 
     Route::get("v1/investissements",[InvestissementControler::class, "index"]);
     Route::get("v1/investissements_by_structure/{id}",[InvestissementControler::class, "investissement_by_structure"]);
+    //2 new routes for investissement(validation & rejection)
+    Route::get("v1/investissements_validation/{id}",[InvestissementControler::class, "investissement_validation"]);
+    Route::get("v1/investissements_rejection/{id}",[InvestissementControler::class, "investissement_rejection"]);
     Route::get("v1/investissements/{id}",[InvestissementControler::class, "show"]);
+    Route::post("v1/structures/update_investissement",[StructureController::class, "updateStepTwo"]);
+    Route::delete("v1/investissements/pilier/axe/{id}",[StructureController::class, "supprimerAxe"]);
+    Route::delete("v1/investissements/pilier/{id}",[StructureController::class, "supprimerPilier"]);
+
 
 
     Route::get("v1/roles",[RoleController::class, "index"]);

@@ -161,7 +161,8 @@ class StructureController extends BaseController
             $userInputs["structure_id"]=$structure->id;
             $userInputs["password"]= bcrypt($password);
             $pontFocal = $this->userRepository->store($userInputs);
-            switch ($request->source_financement) {
+            $pontFocal->assignRole('Admin_structure');
+           /*  switch ($request->source_financement) {
                 case 'SPS':
                     $pontFocal->assignRole('SPS Admin');
                     break;
@@ -179,7 +180,7 @@ class StructureController extends BaseController
                     break;
                 default:
                     break;
-            }
+            } */
 
             $details = [
                 'email' => $request->email_responsable,
@@ -231,8 +232,17 @@ class StructureController extends BaseController
     public function storeStepTwo(Request $request)
     {
 
+        
      //return json_decode($request->piliers[0])->axe[0]->investissement;
+       
 
+        function getStatut (){
+            $statuts =[
+                "Admin_structure" => "En attente de validation",
+                "Point_focal" => "Enregistrer"
+            ];
+            return $statuts[Auth::user()->roles[0]->name];
+        }
     
        $structure= Auth::user()->structure;
 
@@ -251,11 +261,13 @@ class StructureController extends BaseController
         $structureInputs["mis_en_commun_ressource"]=$request->mis_en_commun_ressource;
         $structureInputs["achat_service"]=$request->achat_service;
         $this->structureRepository->update( $structure->id, $structureInputs);
-
+        Auth::user()->roles[0]->name;
+        $roes=[];
         //capture les infos sur la deuxième phase
         $investissement = Investissement::create([
             "annee" => $request->annee,
             "monnaie" => $request->monnaie,
+            "statut" => getStatut(),
             "structure_id" => $structure->id
         ]);
 
@@ -326,6 +338,147 @@ class StructureController extends BaseController
             DB::commit();
         }
         return $this->sendResponse(new StructureResource($structure), "Ajouté avec succés.");
+        } catch (\Exception $e) {
+            DB::rollback();
+		    $success = false;
+            return $this->sendError($e->getMessage());
+        }
+    }
+     
+    public function supprimerPilier($id){
+        Pilier::find($id)->delete();
+    }
+    public function supprimerAxe($id){
+        AxeIntervention::find($id)->delete();
+    }
+
+    public function updateStepTwo(Request $request)
+    {
+        //return $request->all();
+      // $structure= Auth::user()->structure;
+        DB::beginTransaction();
+        $success = false;
+        //les input partagés par les types d"acteur (step 1)
+        try {
+         $structure = Structure::findOrFail($request->structure_id);
+        $structureInputs["mobilisation_ressource"]=$request->mobilisation_ressource ? 1 : 0;
+        $structureInputs["mis_en_commun_ressource"]=$request->mis_en_commun_ressource ? 1 : 0;
+        $structureInputs["achat_service"]=$request->achat_service ? 1 : 0;
+        $this->structureRepository->update( $structure->id, $structureInputs);
+        
+        //capture les infos sur la deuxième phase
+        $investissement = Investissement::find($request->investissement_id);
+        $investissement->update([
+            "annee" => $request->annee,
+            "monnaie" => $request->monnaie,
+        ]);
+
+        foreach ($request->mode_finance as $mode) {
+            $decodedMode = json_decode($mode);
+            if($decodedMode->id){
+                ModeFinancement::find($decodedMode->id)
+                ->update([
+                    "montant" => $decodedMode->montant
+                ]);
+            }elseif(!$decodedMode->id && $decodedMode->montant){
+                ModeFinancement::create([
+                    "libelle"=>$decodedMode->libelle,
+                    "montant"=>$decodedMode->montant,
+                    "investissement_id"=> $investissement->id
+                ]);
+            }elseif($decodedMode->montant){
+                ModeFinancement::find($decodedMode->id)->delete();
+            }
+        }
+
+        //Pilier->Axe[]->NatureInvestissement[]
+        foreach ($request->piliers as $pilier) {
+            $decodedPilier = json_decode($pilier);
+            if(isset($decodedPilier->id)){
+                Pilier::find($decodedPilier->id)
+                            ->update([
+                                'libelle' => $decodedPilier->pilier
+                            ]);
+
+                foreach ($decodedPilier->axe as $axe) {
+                    if(isset($axe->id)){
+                        $updatetAxe = AxeIntervention::find($axe->id);
+                        $updatetAxe->update([
+                        'libelle' => $axe->libelle,
+                     ]);
+                     $updatInvestissement = NatureInvestissement::find($axe->investissement->id);
+                     $updatInvestissement->update([
+                        "montant_prevu" => $axe->investissement->montant_prevu,
+                        "montant_mobilise" => $axe->investissement->montant_mobilise,
+                        "montant_execute" => $axe->investissement->montant_execute,
+                    ]);
+
+                    $updatBienEtService = NatureInvestissement::find($axe->bien_et_service->id);
+                     $updatBienEtService->update([
+                        "montant_prevu" => $axe->bien_et_service->montant_prevu,
+                        "montant_mobilise" => $axe->bien_et_service->montant_mobilise,
+                        "montant_execute" => $axe->bien_et_service->montant_execute,
+                    ]);
+                        
+                    }elseif(!isset($axe->id)){
+                        $newAxe = AxeIntervention::create([
+                            'pilier_id' => $decodedPilier->id,
+                            'libelle' => $axe->libelle,
+                        ]);
+                        NatureInvestissement::create([
+                            "libelle" => "Investissements",
+                            "montant_prevu" => $axe->investissement->montant_prevu,
+                            "montant_mobilise" => $axe->investissement->montant_mobilise,
+                            "montant_execute" => $axe->investissement->montant_execute,
+                            "axe_intervention_id"=> $newAxe->id
+                        ]);
+                        NatureInvestissement::create([
+                            "libelle" => "Biens et services",
+                            "montant_prevu" => $axe->bien_et_service->montant_prevu,
+                            "montant_mobilise" => $axe->bien_et_service->montant_mobilise,
+                            "montant_execute" => $axe->bien_et_service->montant_execute,
+                            "axe_intervention_id"=> $newAxe->id
+                        ]);
+                    }   
+            } 
+          }elseif(!isset($decodedPilier->id)){
+            $newPilier = Pilier::create([
+                'libelle' => $decodedPilier->pilier,
+                'monnaie' => $request->monnaie,
+                'investissement_id' =>$investissement->id,
+            ]);
+            foreach ($decodedPilier->axe as $axe) {
+                if($axe->libelle !== ""){
+                    $newAxe = AxeIntervention::create([
+                        'pilier_id' => $newPilier->id,
+                        'libelle' => $axe->libelle,
+                    ]);
+                }
+            
+                NatureInvestissement::create([
+                    "libelle" => "Investissements",
+                    "montant_prevu" => $axe->investissement->montant_prevu,
+                    "montant_mobilise" => $axe->investissement->montant_mobilise,
+                    "montant_execute" => $axe->investissement->montant_execute,
+                    "axe_intervention_id"=> $newAxe->id
+                ]);
+                NatureInvestissement::create([
+                    "libelle" => "Biens et services",
+                    "montant_prevu" => $axe->bien_et_service->montant_prevu,
+                    "montant_mobilise" => $axe->bien_et_service->montant_mobilise,
+                    "montant_execute" => $axe->bien_et_service->montant_execute,
+                    "axe_intervention_id"=> $newAxe->id
+                ]);
+            
+        }
+        }
+        }
+
+        $success = true;
+        if ($success) {
+            DB::commit();
+        }
+        return $this->sendResponse(new StructureResource($structure), "Modifié avec succés.");
         } catch (\Exception $e) {
             DB::rollback();
 		    $success = false;
