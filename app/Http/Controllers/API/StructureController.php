@@ -68,7 +68,7 @@ class StructureController extends BaseController
         $this->epsRepository = $epsRepository;
         $this->spsRepository = $spsRepository;
         $this->uploadUtil = $uploadUtil;
-        $this->middleware("auth");
+        //$this->middleware("auth");
         // $this->middleware("permission:structure-list|structure-create", ["only" => ["index","store"]]);
     }
     /**

@@ -11,6 +11,7 @@ use App\Http\Controllers\API\StructureController;
 use App\Http\Controllers\API\TypeActeurController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,7 +27,7 @@ use Illuminate\Support\Facades\Route;
 
 /* Route::post("register", [RegisterController::class, "register"]);
 Route::post("login", [RegisterController::class, "login"]); */
-
+Auth::routes();
 Route::group([
     'middleware' => 'cors',
     "prefix" => "v1",
