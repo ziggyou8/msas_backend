@@ -536,41 +536,6 @@ class UserController extends BaseController
         return $this->sendResponse([], "Utilisateur supprimé avec succés.");
     }
 
-    /**
-     * @OA\Get(
-     ** path="/v1/user",
-     *   tags={"Users"},
-     *   summary="Get CurrentUser",
-     *   operationId="Get Current User",
-     *  security={{"bearerAuth": {}}},
-     *
-     *
-     *   @OA\Response(
-     *      response=200,
-     *      description="Success",
-     *      @OA\Property(ref="#/components/schemas/User"),
-     *      @OA\MediaType(
-     *           mediaType="application/json",
-     *      )
-     *   ),
-     *   @OA\Response(
-     *      response=401,
-     *      description="Unauthenticated"
-     *   ),
-     *   @OA\Response(
-     *      response=400,
-     *      description="Bad Request"
-     *   ),
-     *   @OA\Response(
-     *      response=404,
-     *      description="not found"
-     *   ),
-     *      @OA\Response(
-     *          response=403,
-     *          description="Forbidden"
-     *      )
-     *)
-     **/
     public function get_current_user(Request $request){
         return $this->sendResponse(new UserRessource($request->user()), "succés.");
     }

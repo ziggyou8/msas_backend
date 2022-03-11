@@ -11,7 +11,6 @@ use App\Http\Controllers\API\StructureController;
 use App\Http\Controllers\API\TypeActeurController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,7 +26,7 @@ use Illuminate\Support\Facades\Route;
 
 /* Route::post("register", [RegisterController::class, "register"]);
 Route::post("login", [RegisterController::class, "login"]); */
-Auth::routes();
+
 Route::group([
     'middleware' => 'cors',
     "prefix" => "v1",
@@ -41,11 +40,11 @@ Route::middleware("auth:api")->group( function () {
     /* Route::resource("users", UserController::class); */
     Route::post("v1/logout",[RegisterController::class, "logout"] );
     Route::get("v1/users",[UserController::class, "index"] );
-    Route::post("v1/users",[UserController::class, "store"] );
     Route::get("v1/user",[UserController::class, "get_current_user"] );
     Route::get("v1/users/{id}",[UserController::class, "show"] );
     Route::get("v1/users_by_structure/{id}",[UserController::class, "users_by_structure"] );
     Route::put("v1/users/{id}",[UserController::class, "update"] ); //?_method=PUT
+    Route::post("v1/users",[UserController::class, "store"] );
     Route::get("v1/users/status/{id}",[UserController::class, "est_actif"] );
     Route::post("v1/users/update_profile",[UserController::class, "profileUpdate"] );
     Route::post("v1/users/update_password",[UserController::class, "passwordUpdate"] );
