@@ -187,7 +187,7 @@ class RegisterController extends BaseController
     {
         if(Auth::attempt(["email" => $request->email, "password" => $request->password]) && Auth::user()->actif){ 
             $user = Auth::user(); 
-            $success["token"] =  $user->createToken("MyApp")-> accessToken; 
+            $success["token"] =  $user->createToken("MyApp")->accessToken;
             $success["id"] =  $user->id;
             $success["prenom"] =  $user->prenom;
             $success["nom"] =  $user->nom;
