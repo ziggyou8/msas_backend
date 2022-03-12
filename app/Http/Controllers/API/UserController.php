@@ -199,8 +199,7 @@ class UserController extends BaseController
             $user->structure_id = $request->structure_id || null;
             $user->assignRole($request->role);
             $user->save();
-        }
-         else{
+        } else {
             $user->structure_id = Auth::user()->structure_id;
             $user->assignRole("Point_focal");
             $user->save();
@@ -542,7 +541,7 @@ class UserController extends BaseController
      *   tags={"Users"},
      *   summary="Get CurrentUser",
      *   operationId="Get Current User",
-     * security={{"passport": {"*"}}},
+     *  security={{"bearerAuth": {}}},
      *
      *
      *   @OA\Response(

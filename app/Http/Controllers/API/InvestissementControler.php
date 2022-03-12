@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CommentaireRessource;
 use App\Http\Resources\InvestissementResource;
+use App\Models\Commentaire;
 use App\Models\Investissement;
 use App\Repositories\InvestissementRepository;
 use Illuminate\Http\Request;
@@ -72,6 +74,18 @@ class InvestissementControler extends BaseController
         $investissements->save();
 
         return $this->sendResponse(new InvestissementResource($investissements), "succés.");
+    }
+
+    public function comment(Request $request,$investissement_id)
+    {
+  
+        $commentaire = Commentaire::create([
+            "investissement_id" => $investissement_id,
+            "description" => $request->description,
+        ]);
+        $commentaire->save();
+
+        return $this->sendResponse(new CommentaireRessource($commentaire), "succés.");
     }
 
 
