@@ -18,6 +18,7 @@ class InvestissementResource extends JsonResource
             "id" => $this->id,
             "annee" => $this->annee,
             "monnaie"=> $this->monnaie,
+            "comments"=> $this->comments,
             "statut"=> $this->statut,
             "piliers"=> $this->piliers,
             "mode_financement"=>$this->mode_financement,

@@ -18,6 +18,11 @@ class Investissement extends Model
         return $this->hasMany(ModeFinancement::class);
     }
 
+    public function comments()
+    {
+        return $this->hasMany(Commentaire::class);
+    }
+
     public function piliers()
     {
         return $this->hasMany(Pilier::class)->with(['axes']);

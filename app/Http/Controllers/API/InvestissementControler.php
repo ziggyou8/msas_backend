@@ -59,8 +59,9 @@ class InvestissementControler extends BaseController
         return $this->sendResponse(new InvestissementResource($investissements), "succés.");
     }
 
-    public function investissement_rejection($id)
+    public function investissement_rejection(Request $request, $id)
     {
+        
         function getStatutRejection (){
             $statuts =[
                 "Admin_DPRS" => "En attente de validation",
@@ -73,25 +74,26 @@ class InvestissementControler extends BaseController
         $investissements->statut = getStatutRejection();
         $investissements->save();
 
-        return $this->sendResponse(new InvestissementResource($investissements), "succés.");
+        $commentaire = Commentaire::create([
+            "investissement_id" => $id,
+            "user_id" => Auth::user()->id,
+            "description" => $request->description,
+        ]);
+        $commentaire->save();
+
+
+        return $this->sendResponse(new CommentaireRessource($commentaire), "succés.");
     }
 
-    public function comment(Request $request,$investissement_id)
+   /*  public function comment(Request $request,$investissement_id)
     {
-  
         $commentaire = Commentaire::create([
             "investissement_id" => $investissement_id,
             "description" => $request->description,
         ]);
         $commentaire->save();
-
         return $this->sendResponse(new CommentaireRessource($commentaire), "succés.");
-    }
-
-
-    
-    
-
+    } */
 
     /**
      * Show the form for creating a new resource.
@@ -123,12 +125,11 @@ class InvestissementControler extends BaseController
     public function show($id)
     {
         $investissement = Investissement::find($id);
-        if (!is_null($investissement)) {
+        if(!is_null($investissement)) {
             return $this->sendResponse(new InvestissementResource($investissement), "succés.");
-          } else {
+          }else {
             return $this->sendError("Investissement introuvable");
-          }
-;
+        };
     }
 
     /**

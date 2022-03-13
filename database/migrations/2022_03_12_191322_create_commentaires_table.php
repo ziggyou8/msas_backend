@@ -17,6 +17,7 @@ class CreateCommentairesTable extends Migration
             $table->increments("id");
             $table->longText('description');
             $table->integer("investissement_id");
+            $table->integer("user_id");
             $table->timestamps();
         });
     }

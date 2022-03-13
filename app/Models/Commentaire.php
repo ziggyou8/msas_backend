@@ -10,10 +10,10 @@ class Commentaire extends Model
     use HasFactory;
 
     public $timestamps = true;
-    protected $fillable = array("investissement_id", "description");
+    protected $fillable = array("investissement_id", "description", "user_id");
 
-    public function sous_recipiandaires()
+    public function user()
     {
-        return $this->hasMany(sousRecipiandaire::class);
+        return $this->belongsTo(User::class);
     }
 }

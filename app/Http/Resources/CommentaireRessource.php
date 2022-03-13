@@ -17,6 +17,7 @@ class CommentaireRessource extends JsonResource
         return [
             "id" => $this->id,
             "investissement_id" => $this->investissement_id,
+            "user" => $this->user,
             "description"=> $this->description,
         ];
     }
