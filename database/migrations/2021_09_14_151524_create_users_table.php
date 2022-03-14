@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string("email")->unique();
             $table->string("telephone")->nullable();
             $table->boolean("actif")->default(1);
-            $table->integer("structure_id")->nullable();
+            $table->integer("structure_id")->nullable()->unsigned();
             /* $table->unsignedInteger("structure_id")->nullable();
             $table->foreign("structure_id")->references("id")->on("structures")->onDelete("cascade"); */
             $table->timestamp("email_verified_at")->nullable();

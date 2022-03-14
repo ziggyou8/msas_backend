@@ -104,7 +104,7 @@ class CreateForeignKeys extends Migration {
 
 		Schema::table("users", function(Blueprint $table) {
 			$table->foreign("structure_id")->references("id")->on("structures")
-						->onDelete("cascade")
+						->onDelete("restrict")
 						->onUpdate("restrict");
 		});
 		/* Schema::table("user_structures", function(Blueprint $table) {
