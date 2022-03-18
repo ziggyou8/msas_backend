@@ -114,9 +114,6 @@ Route::middleware("auth:api")->group( function () {
     Route::delete("v1/districtes/{id}",[DistricteSanitaireController::class, "destroy"]);
     Route::put("v1/districtes/{id}",[DistricteSanitaireController::class, "update"]);
 
-    
-
-
 });
 Route::post("v1/roles",[RoleController::class, "store"]);
 Route::put("v1/roles/{id}",[RoleController::class, "update"]);
