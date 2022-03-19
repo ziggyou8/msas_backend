@@ -25,9 +25,9 @@ class UserRessource extends JsonResource
             "email" => $this->email,
             "actif" => $this->actif,
             "status"=>$this->estActif(),
-            "roles"=> [$this->roles[0]->libelle,$this->roles[0]->name],
+            "roles"=> [$this->roles[0]->libelle ?? '', $this->roles[0]->name ?? ''],
             "structure"=>$this->structure,
-            "permission"=>$this->getPermissionsViaRoles()->pluck("name"),
+            "permission"=>$this->getPermissionsViaRoles()->pluck("name") ?? '',
             "created_at" => $this->created_at->format("d/m/Y"),
             "updated_at" => $this->updated_at->format("d/m/Y"),
         ];

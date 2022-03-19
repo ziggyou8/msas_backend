@@ -1,16 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\API;
-use Illuminate\Http\Request;
+
 use App\Http\Controllers\API\BaseController as BaseController;
 use App\Http\Resources\UserRessource;
 use App\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
-use Spatie\Permission\Models\Role;
 
 class UserController extends BaseController
 {
@@ -20,7 +20,7 @@ class UserController extends BaseController
      * @return \Illuminate\Http\Response
      */
 
-     /**
+    /**
      * @OA\Get(
      ** path="/v1/users",
      *   tags={"Users"},
@@ -57,29 +57,23 @@ class UserController extends BaseController
 
     public function index()
     {
-        $users = User::all()->where('id','!=', Auth::user()->id);
-       // $users = User::whereDoesntHave("admin")->get();
-    
+        $users = User::all()->where('id', '!=', Auth::user()->id);
+        // $users = User::whereDoesntHave("admin")->get();
+
         return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
 
     public function est_actif($id)
     {
         $user = User::find($id);
-        $user->actif =!$user->actif;
+        $user->actif = !$user->actif;
         $user->save();
-       return $this->sendResponse(new UserRessource($user),  $user->actif ? 'Utilisateur activé avec succés.' : 'Utilisateur désactivé avec succés.');
+        return $this->sendResponse(new UserRessource($user), $user->actif ? 'Utilisateur activé avec succés.' : 'Utilisateur désactivé avec succés.');
     }
-
 
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-
-    /**
      * @OA\Post(
      ** path="/v1/users",
      *   tags={"Users"},
@@ -95,11 +89,11 @@ class UserController extends BaseController
      *           type="string"
      *      )
      *   ),
-     * 
+     *
      * @OA\Parameter(
      *      name="nom",
      *      in="query",
-     *      required=true, 
+     *      required=true,
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -135,7 +129,7 @@ class UserController extends BaseController
      *           type="integer"
      *      )
      *   ),
-     * 
+     *
      *   @OA\Parameter(
      *      name="role",
      *      in="query",
@@ -144,7 +138,7 @@ class UserController extends BaseController
      *           type="string"
      *      )
      *   ),
-     * 
+     *
      * *  @OA\Parameter(
      *      name="structure_id[]",
      *      in="query",
@@ -153,7 +147,7 @@ class UserController extends BaseController
      *          type="array",@OA\Items(type="integer"),
      *      )
      *   ),
-     * 
+     *
      *   @OA\Response(
      *      response=201,
      *       description="Success",
@@ -178,25 +172,24 @@ class UserController extends BaseController
      *          description="Forbidden"
      *      )
      *)
+     * @param Request $request
+     * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         $input = $request->all();
         $password = bin2hex(openssl_random_pseudo_bytes(4));
         $input["password"] = bcrypt($password);
-        $validator = Validator::make($input, [
-            "prenom" => "required",
-            "nom" => "required",
-            "email" => "required"
-        ]);
-   
-        if($validator->fails()){
-            return $this->sendError("Validation Error.", $validator->errors());       
+        $validator = Validator::make($input, ["prenom" => "required", "nom" => "required",
+            "email" => "required|unique:users,email,NULL,id"]);
+
+        if ($validator->fails()) {
+            return $this->sendError("Validation Error.", $validator->errors());
         }
 
         $user = User::create($input);
-        if (Auth::user()->roles[0]->name === "Admin_DPRS" ) {
-            $user->structure_id = $request->structure_id || null;
+        if (Auth::user()->roles[0]->name === "Admin_DPRS") {
+            $user->structure_id = $request->structure_id ?? null;
             $user->assignRole($request->role);
             $user->save();
         } else {
@@ -207,22 +200,16 @@ class UserController extends BaseController
 
         $details = [
             'email' => $request->email,
-            'full_name' =>  $user->prenom .' '.  $user->nom,
-            'structure_name' => $user->structure->denomination,
+            'full_name' => $user->prenom . ' ' . $user->nom,
+            'structure_name' => $user->structure->denomination ?? null,
             'password' => $password
-            ];
-       
-            try {
-                Mail::to($user->email)->send(new \App\Mail\CreatedAcountMailer($details));
-            } catch (\Throwable $th) {
-                return $this->sendError("Connexion faible!! Essayez de vous reconnecter");
-            }
+        ];
 
-       /*  if($request->structure_id){
-            $user->structures()->attach($request->only("structure_id")["structure_id"]);
-
-            $request->structure_id && $user->structures()->attach($request->only("structure_id")["structure_id"]);
-        } */
+        try {
+            Mail::to($user->email)->send(new \App\Mail\CreatedAcountMailer($details));
+        } catch (\Throwable $th) {
+            return $this->sendError("Connexion faible!! Essayez de vous reconnecter");
+        }
 
         return $this->sendResponse(new UserRessource($user), "Utilisateur ajouté avec succés.");
     }
@@ -230,7 +217,7 @@ class UserController extends BaseController
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
 
@@ -282,10 +269,10 @@ class UserController extends BaseController
         $user = User::find($id);
         if (!is_null($user)) {
             return $this->sendResponse(new UserRessource($user), "succés.");
-          } else {
+        } else {
             return $this->sendError("Cet utilisateur n'existe pas");
-          }
-      
+        }
+
     }
 
     public function users_by_structure($id)
@@ -298,7 +285,7 @@ class UserController extends BaseController
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
     public function edit($id)
@@ -309,12 +296,12 @@ class UserController extends BaseController
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
 
-     /**
+    /**
      * @OA\Put(
      ** path="/v1/users/{id}",
      *   tags={"Users"},
@@ -330,7 +317,7 @@ class UserController extends BaseController
      *           type="integer"
      *      )
      * ),
-     * 
+     *
      *  @OA\Parameter(
      *      name="prenom",
      *      in="query",
@@ -339,11 +326,11 @@ class UserController extends BaseController
      *           type="string"
      *      )
      *   ),
-     * 
+     *
      * @OA\Parameter(
      *      name="nom",
      *      in="query",
-     *      required=false, 
+     *      required=false,
      *      @OA\Schema(
      *           type="string"
      *      )
@@ -379,7 +366,7 @@ class UserController extends BaseController
      *           type="integer"
      *      )
      *   ),
-     * 
+     *
      *   @OA\Parameter(
      *      name="role",
      *      in="query",
@@ -388,7 +375,7 @@ class UserController extends BaseController
      *           type="string"
      *      )
      *   ),
-     * 
+     *
      *   @OA\Response(
      *      response=201,
      *       description="Success",
@@ -414,19 +401,19 @@ class UserController extends BaseController
      *      )
      *)
      */
-    public function update(Request $request,$id)
+    public function update(Request $request, $id)
     {
         $user = User::find($id);
-        $user->photo =  $request->photo ? $request->photo : $user->photo;
-        $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
-        $user->nom =  $request->nom ? $request->nom : $user->nom;
+        $user->photo = $request->photo ? $request->photo : $user->photo;
+        $user->prenom = $request->prenom ? $request->prenom : $user->prenom;
+        $user->nom = $request->nom ? $request->nom : $user->nom;
         $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
         $user->email = $request->email ? $request->email : $user->email;
-        $user->password = $request->password ? bcrypt($request->password ) : $user->password;
+        $user->password = $request->password ? bcrypt($request->password) : $user->password;
         $user->save();
         $request->role && $user->syncRoles($request->role);
         $request->structure_id && $user->structures()->sync($request->only("structure_id")["structure_id"]);
-        
+
         return $this->sendResponse(new UserRessource($user), "Modifié avec succès.");
     }
 
@@ -436,21 +423,21 @@ class UserController extends BaseController
         $success = false;
         try {
             $user = User::find(Auth::user()->id);
-            $user->photo =  $request->photo ? $request->photo : $user->photo;
-            $user->prenom =  $request->prenom ? $request->prenom : $user->prenom;
-            $user->nom =  $request->nom ? $request->nom : $user->nom;
+            $user->photo = $request->photo ? $request->photo : $user->photo;
+            $user->prenom = $request->prenom ? $request->prenom : $user->prenom;
+            $user->nom = $request->nom ? $request->nom : $user->nom;
             $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
             $user->email = $request->email ? $request->email : $user->email;
-            $user->save(); 
-   
-         $success = true;
+            $user->save();
+
+            $success = true;
             if ($success) {
                 DB::commit();
             }
-        return $this->sendResponse(new UserRessource($user), "Profile modifié avec succés.");
+            return $this->sendResponse(new UserRessource($user), "Profile modifié avec succés.");
         } catch (\Exception $e) {
             DB::rollback();
-		    $success = false;
+            $success = false;
             return $this->sendError("Erreur! Réessayez svp");
         }
     }
@@ -458,20 +445,20 @@ class UserController extends BaseController
 
     public function passwordUpdate(Request $request)
     {
-       
+
         try {
             $user = User::find(Auth::user()->id);
 
-            if(!Hash::check($request->old_password, $user->password)) {
+            if (!Hash::check($request->old_password, $user->password)) {
                 return $this->sendError("Ancien mot de passe incorrect");
             }
 
-            if ($request->password !== $request->confirm_password ) {
+            if ($request->password !== $request->confirm_password) {
                 return $this->sendError("Les mots de passe ne correspondent pas");
             }
-            
-            $user->password = $request->password ? bcrypt($request->password ) : $user->password;
-            $user->save(); 
+
+            $user->password = $request->password ? bcrypt($request->password) : $user->password;
+            $user->save();
             return $this->sendResponse(new UserRessource($user), "Mot de passe modifié avec succés.");
         } catch (\Exception $e) {
             return $this->sendError("Erreur! Réessayez svp");
@@ -481,11 +468,11 @@ class UserController extends BaseController
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  int $id
      * @return \Illuminate\Http\Response
      */
 
-     /**
+    /**
      * @OA\Delete(
      ** path="/v1/users/{id}",
      *   tags={"Users"},
@@ -570,7 +557,8 @@ class UserController extends BaseController
      *      )
      *)
      **/
-    public function get_current_user(Request $request){
+    public function get_current_user(Request $request)
+    {
         return $this->sendResponse(new UserRessource($request->user()), "succés.");
     }
 }
