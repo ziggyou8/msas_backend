@@ -65,7 +65,7 @@ Route::middleware("auth:api")->group(function () {
     Route::get("v1/investissements", [InvestissementControler::class, "index"]);
     Route::get("v1/investissements_by_structure/{id}", [InvestissementControler::class, "investissement_by_structure"]);
     //2 new routes for investissement(validation & rejection)
-    Route::post("v1/investissements_validation/{id}", [InvestissementControler::class, "investissement_validation"]);
+    Route::get("v1/investissements_validation/{id}", [InvestissementControler::class, "investissement_validation"]);
     Route::post("v1/investissements_rejection/{id}", [InvestissementControler::class, "investissement_rejection"]);
     Route::post("v1/investissements/comment/{id}", [InvestissementControler::class, "comment"]);
 
