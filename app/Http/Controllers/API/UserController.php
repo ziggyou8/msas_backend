@@ -277,7 +277,7 @@ class UserController extends BaseController
 
     public function users_by_structure($id)
     {
-        $users = User::where('structure_id', $id)->get();
+        $users = User::where('structure_id', $id)->where('id', '!=', Auth::user()->id)->get();
 
         return $this->sendResponse(UserRessource::collection($users), "succés.");
     }
