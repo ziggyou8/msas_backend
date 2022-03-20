@@ -457,8 +457,10 @@ class UserController extends BaseController
                 return $this->sendError("Les mots de passe ne correspondent pas");
             }
 
-            $user->password = $request->password ? bcrypt($request->password) : $user->password;
-            $user->save();
+            /* $user->password = $request->password ? bcrypt($request->password) : $user->password; */
+            $user->update([
+                "password"=>$request->password ? bcrypt($request->password) : $user->password
+            ]);
             return $this->sendResponse(new UserRessource($user), "Mot de passe modifié avec succés.");
         } catch (\Exception $e) {
             return $this->sendError("Erreur! Réessayez svp");

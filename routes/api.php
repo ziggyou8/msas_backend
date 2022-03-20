@@ -42,8 +42,8 @@ Route::middleware("auth:api")->group(function () {
     Route::put("v1/users/{id}", [UserController::class, "update"]); //?_method=PUT
     Route::post("v1/users", [UserController::class, "store"]);
     Route::get("v1/users/status/{id}", [UserController::class, "est_actif"]);
-    Route::post("v1/users/update_profile", [UserController::class, "profileUpdate"]);
-    Route::post("v1/users/update_password", [UserController::class, "passwordUpdate"]);
+    Route::put("v1/users/update_profile", [UserController::class, "profileUpdate"]);
+    Route::put("v1/users/update_password", [UserController::class, "passwordUpdate"]);
     Route::delete("v1/users/{id}", [UserController::class, "destroy"]);
 
     Route::post("v1/financements", [SourceFinancementController::class, "store"]);
@@ -57,7 +57,7 @@ Route::middleware("auth:api")->group(function () {
     Route::post("v1/structures", [StructureController::class, "store"]);
     Route::post("v1/structures/step_1", [StructureController::class, "storeStepOne"]);
     Route::post("v1/structures/step_2", [StructureController::class, "storeStepTwo"]);
-    Route::post("v1/structures/update_basic_info", [StructureController::class, "basicInfoUpdate"]);
+    Route::post("v1/structures/update_basic_info/{id}", [StructureController::class, "basicInfoUpdate"]);
     Route::get("v1/structures/{id}", [StructureController::class, "show"]);
     Route::put("v1/structures/{id}", [StructureController::class, "update"]);
     Route::delete("v1/structures/{id}", [StructureController::class, "destroy"]);
