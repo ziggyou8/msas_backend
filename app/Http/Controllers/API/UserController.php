@@ -420,27 +420,15 @@ class UserController extends BaseController
 
     public function profileUpdate(Request $request)
     {
-        DB::beginTransaction();
-        $success = false;
-        try {
-            $user = User::find(Auth::user()->id);
-            $user->photo = $request->photo ? $request->photo : $user->photo;
-            $user->prenom = $request->prenom ? $request->prenom : $user->prenom;
-            $user->nom = $request->nom ? $request->nom : $user->nom;
-            $user->telephone = $request->telephone ? $request->telephone : $user->telephone;
-            $user->email = $request->email ? $request->email : $user->email;
-            $user->save();
-
-            $success = true;
-            if ($success) {
-                DB::commit();
-            }
+        $user = Auth::user();
+        $user->photo = $request->photo ?? $user->photo;
+        $user->prenom = $request->prenom ?? $user->prenom;
+        $user->nom = $request->nom ?? $user->nom;
+        $user->telephone = $request->telephone ?? $user->telephone;
+        $user->email = $request->email ?? $user->email;
+        if ($user->save())
             return $this->sendResponse(new UserRessource($user), "Profile modifié avec succés.");
-        } catch (\Exception $e) {
-            DB::rollback();
-            $success = false;
-            return $this->sendError("Erreur! Réessayez svp");
-        }
+        return $this->sendError("Erreur! Réessayez svp");
     }
 
 
@@ -448,7 +436,7 @@ class UserController extends BaseController
     {
 
         try {
-            $user = User::find(Auth::user()->id);
+            $user = Auth::user();
 
             if (!Hash::check($request->old_password, $user->password)) {
                 return $this->sendError("Ancien mot de passe incorrect");
@@ -460,7 +448,7 @@ class UserController extends BaseController
 
             /* $user->password = $request->password ? bcrypt($request->password) : $user->password; */
             $user->update([
-                "password"=>$request->password ? bcrypt($request->password) : $user->password
+                "password" => $request->password ? bcrypt($request->password) : $user->password
             ]);
             return $this->sendResponse(new UserRessource($user), "Mot de passe modifié avec succés.");
         } catch (\Exception $e) {

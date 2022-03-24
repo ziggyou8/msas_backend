@@ -42,8 +42,8 @@ Route::middleware("auth:api")->group(function () {
     Route::put("v1/users/{id}", [UserController::class, "update"]); //?_method=PUT
     Route::post("v1/users", [UserController::class, "store"]);
     Route::get("v1/users/status/{id}", [UserController::class, "est_actif"]);
-    Route::put("v1/users/update_profile", [UserController::class, "profileUpdate"]);
-    Route::put("v1/users/update_password", [UserController::class, "passwordUpdate"]);
+    Route::put("v1/user/update_profile", [UserController::class, "profileUpdate"]);
+    Route::put("v1/user/update_password", [UserController::class, "passwordUpdate"]);
     Route::delete("v1/users/{id}", [UserController::class, "destroy"]);
     Route::put('v1/users/{id}/reset-password', [UserController::class, "resetPassword"]);
 
