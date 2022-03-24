@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Commentaire;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class InvestissementResource extends JsonResource
@@ -19,6 +20,7 @@ class InvestissementResource extends JsonResource
             "annee" => $this->annee,
             "monnaie"=> $this->monnaie,
             "comments"=> $this->comments,
+            "last_comment"=> $this->last_comment,
             "statut"=> $this->statut,
             "piliers"=> $this->piliers,
             "mode_financement"=>$this->mode_financement,
