@@ -7,6 +7,7 @@ use App\Http\Resources\UserRessource;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;
@@ -560,5 +561,22 @@ class UserController extends BaseController
     public function get_current_user(Request $request)
     {
         return $this->sendResponse(new UserRessource($request->user()), "succés.");
+    }
+
+
+    public function resetPassword(Request $request, $id)
+    {
+        $inputs = $request->all();
+        $validator = Validator::make($inputs, ["email" => "required"]);
+        if ($validator->fails()) {
+            return $this->sendError("Validation Error.", $validator->errors());
+        }
+        $user = User::find($id);
+        if (is_null($user) || $inputs['email'] != $user->email)
+            return $this->sendError("La réinitialisation a échoué...");
+
+        $user->password = password_hash(Config::get('constants.password'), PASSWORD_BCRYPT);
+        $user->save();
+        return $this->sendResponse([], "Mot de passe réinitialisé avec succés.");
     }
 }

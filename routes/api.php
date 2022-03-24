@@ -45,6 +45,7 @@ Route::middleware("auth:api")->group(function () {
     Route::post("v1/users/update_profile", [UserController::class, "profileUpdate"]);
     Route::post("v1/users/update_password", [UserController::class, "passwordUpdate"]);
     Route::delete("v1/users/{id}", [UserController::class, "destroy"]);
+    Route::put('v1/users/{id}/reset-password', [UserController::class, "resetPassword"]);
 
     Route::post("v1/financements", [SourceFinancementController::class, "store"]);
     Route::get("v1/financements", [SourceFinancementController::class, "index"]);
