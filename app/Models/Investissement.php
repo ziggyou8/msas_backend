@@ -23,6 +23,11 @@ class Investissement extends Model
         return $this->hasMany(Commentaire::class);
     }
 
+    public function last_comment()
+    {
+     return $this->hasOne(Commentaire::class)->latest();
+    }
+
     public function piliers()
     {
         return $this->hasMany(Pilier::class)->with(['axes']);
