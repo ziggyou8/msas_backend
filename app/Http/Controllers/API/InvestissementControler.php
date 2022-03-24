@@ -44,6 +44,7 @@ class InvestissementControler extends BaseController
 
     public function investissement_validation($id)
     {
+        
         function getStatutValidation (){
             $statuts =[
                 "Admin_DPRS" => "Valider",
@@ -53,10 +54,14 @@ class InvestissementControler extends BaseController
             return $statuts[Auth::user()->roles[0]->name];
         }
 
-        $investissements = Investissement::where('structure_id', $id)->first();
-        $investissements->statut = getStatutValidation();
-        $investissements->save();
-        return $this->sendResponse(new InvestissementResource($investissements), "succés.");
+        $investissement = Investissement::find($id);
+        if(!$investissement){
+            return $this->sendError("Investissement inexistant");
+        }
+
+        $investissement->statut = getStatutValidation();
+        $investissement->save();
+        return $this->sendResponse(new InvestissementResource($investissement), "succés.");
     }
 
     public function investissement_rejection(Request $request, $id)
@@ -70,9 +75,9 @@ class InvestissementControler extends BaseController
             return $statuts[Auth::user()->roles[0]->name];
         }
 
-        $investissements = Investissement::where('structure_id', $id)->first();
-        $investissements->statut = getStatutRejection();
-        $investissements->save();
+        $investissement =  $investissement = Investissement::find($id);;
+        $investissement->statut = getStatutRejection();
+        $investissement->save();
 
         $commentaire = Commentaire::create([
             "investissement_id" => $id,
@@ -82,7 +87,7 @@ class InvestissementControler extends BaseController
         $commentaire->save();
 
 
-        return $this->sendResponse(new CommentaireRessource($commentaire), "succés.");
+        return $this->sendResponse(new InvestissementResource($investissement), "succés.");
     }
 
    /*  public function comment(Request $request,$investissement_id)

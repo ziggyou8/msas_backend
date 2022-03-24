@@ -486,9 +486,10 @@ class StructureController extends BaseController
         }
     }
 
-    public function basicInfoUpdate(Request $request)
+    public function basicInfoUpdate(Request $request, $id)
     {
-        $structureToUpdate = Auth::user()->structure;
+      
+        $structureToUpdate = Structure::find($id);
         $basicInfoInputs["adresse_siege"] = $request->adresse_siege;
         $basicInfoInputs["email_siege"] = $request->email_siege;
         $basicInfoInputs["telephone_siege"] = $request->telephone_siege;
