@@ -10,6 +10,7 @@ use App\Http\Controllers\API\SourceFinancementController;
 use App\Http\Controllers\API\StructureController;
 use App\Http\Controllers\API\TypeActeurController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\API\DemandeInformationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -109,6 +110,9 @@ Route::middleware("auth:api")->group(function () {
     Route::delete("v1/districtes/{id}", [DistricteSanitaireController::class, "destroy"]);
     Route::put("v1/districtes/{id}", [DistricteSanitaireController::class, "update"]);
 
+    //Demande d'informations
+    Route::apiResource('v1/demande-informations', DemandeInformationController::class);
+    Route::get('v1/demande-informations-profil', [DemandeInformationController::class, 'getProfils']);
 
 });
 Route::post("v1/roles", [RoleController::class, "store"]);
