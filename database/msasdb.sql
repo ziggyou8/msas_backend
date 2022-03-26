@@ -34,6 +34,7 @@ INSERT INTO `collectivites` (`code`, `nom`, `statut`, `type_collectivite`, `pare
 ('12', 'Tambacounda', 'ACTIVE', 'Region', NULL),
 ('13', 'Thiès', 'ACTIVE', 'Region', NULL),
 ('14', 'ZIGUINCHOR', 'ACTIVE', 'Region', NULL),
+('15', 'Choix National', 'ACTIVE', 'Region', NULL),
 ('011', 'Dakar', 'ACTIVE', 'Département', '01'),
 ('012', 'Guédiawaye', 'ACTIVE', 'Département', '01'),
 ('013', 'Keur Massar', 'ACTIVE', 'Département', '01'),
