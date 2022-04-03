@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CollectiviteController;
+use App\Http\Controllers\API\DemandeInformationController;
 use App\Http\Controllers\API\DistricteSanitaireController;
 use App\Http\Controllers\API\InvestissementControler;
 use App\Http\Controllers\API\PermissionController;
@@ -10,7 +11,6 @@ use App\Http\Controllers\API\SourceFinancementController;
 use App\Http\Controllers\API\StructureController;
 use App\Http\Controllers\API\TypeActeurController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\API\DemandeInformationController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -115,6 +115,8 @@ Route::middleware("auth:api")->group(function () {
     //Demande d'informations
     Route::apiResource('v1/demande-informations', DemandeInformationController::class);
     Route::get('v1/demande-informations-profil', [DemandeInformationController::class, 'getProfils']);
+    Route::put('v1/demande-informations/{id}/traitee', [DemandeInformationController::class, 'markAsTreated']);
+    Route::put('v1/demande-informations/{id}/change-structure', [DemandeInformationController::class, 'changeStructure']);
 
 });
 Route::post("v1/roles", [RoleController::class, "store"]);

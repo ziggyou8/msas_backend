@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\API;
 
+use App\Enums\EtatDemandeInformation;
 use App\Http\Requests\DemandeInformationRequest;
 use App\Http\Resources\DemandeInformationRessource;
 use App\Repositories\DemandeInformationRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Date;
 
 class DemandeInformationController extends BaseController
 {
@@ -54,5 +57,29 @@ class DemandeInformationController extends BaseController
     {
         $profils = $this->demandeInformationRepository->getProfil();
         return $this->sendResponse($profils, 'Succés');
+    }
+
+    public function markAsTreated($id)
+    {
+        $result = $this->demandeInformationRepository->markAsTreated($id, [
+            'user_id' => Auth::user()->id ?? null,
+            'date_traitement' => Date::now(),
+            'etat' => EtatDemandeInformation::Traitee
+        ]);
+
+        if ($result)
+            return $this->sendResponse([], "Demande d'information traitée avec succés.");
+        return $this->sendError('Erreur lors du traitement');
+    }
+
+    public function changeStructure(Request $request, $id)
+    {
+        $request->validate(['structure_id' => 'required|numeric']);
+
+        $result = $this->demandeInformationRepository->updateStructure($id, $request->get('structure_id'));
+
+        if ($result)
+            return $this->sendResponse([], "Structure attribuée avec succés.");
+        return $this->sendError('Erreur lors du changement de structure');
     }
 }
