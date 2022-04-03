@@ -3,13 +3,12 @@
 namespace App\Models;
 
 use App\Models\Structures\Structure;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
-use Spatie\Permission\Models\Role;
 use Spatie\Permission\Traits\HasRoles;
+use App\Notifications\ResetPasswordNotification;
 
 /**
  * @OA\Schema(
@@ -23,24 +22,26 @@ use Spatie\Permission\Traits\HasRoles;
 class User extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens, HasRoles;
-    
 
-   /*  public function structures(){
-        return $this->belongsToMany(Structure::class,"structures_users");
-   } */
 
-   public function structure(){
-    return $this->belongsTo(Structure::class);  
-}
+    /*  public function structures(){
+         return $this->belongsToMany(Structure::class,"structures_users");
+    } */
 
-public function estActif(){
-    return $this->actif ? 'actif' : 'inactif';  
-}
+    public function structure()
+    {
+        return $this->belongsTo(Structure::class);
+    }
 
-/* public function getAuthRoles(){
-    return $this->hasMany(Role::class);  
-} */
-   
+    public function estActif()
+    {
+        return $this->actif ? 'actif' : 'inactif';
+    }
+
+    /* public function getAuthRoles(){
+        return $this->hasMany(Role::class);
+    } */
+
 
     /**
      * The attributes that are mass assignable.
@@ -77,57 +78,54 @@ public function estActif(){
         "email_verified_at" => "datetime",
     ];
 
-    
 
     /**
-    * @OA\Property(
-    *      property="id", 
-    *      type="integer", 
-    *  ),
-
-    * @OA\Property(
-    *      property="photo",
-    *      type="string",
-    * ),
-
-    * @OA\Property(
-    *      property="prenom", 
-    *      type="string",  
-    *  ),
-
+     * @OA\Property(
+     *      property="id",
+     *      type="integer",
+     *  ),
+     * @OA\Property(
+     *      property="photo",
+     *      type="string",
+     * ),
+     * @OA\Property(
+     *      property="prenom",
+     *      type="string",
+     *  ),
      * @OA\Property(
      *      property="nom",
-     *      type="string", 
+     *      type="string",
      * ),
-     * 
+     *
      * @OA\Property(
      *      property="telephone",
-     *      type="string", 
+     *      type="string",
      * ),
-     * 
+     *
      * @OA\Property(
      *      property="email",
-     *      type="string", 
+     *      type="string",
      * ),
      * @OA\Property(
-     *      property="structure_id[]", 
+     *      property="structure_id[]",
      *      type="array",@OA\Items(type="integer"),
      *  ),
-     * 
+     *
      * @OA\Property(
      *      property="role",
-     *      type="string", 
+     *      type="string",
      * ),
-     * 
+     *
      * @OA\Property(
      *      property="password",
      *      type="string",
      * ),
-     * 
+     *
      * @OA\Property(
      *      property="c_password",
      *      type="string",
      * ),
-     * 
+     *
      */
+
 }

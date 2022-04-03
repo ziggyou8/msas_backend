@@ -30,6 +30,8 @@ Route::post("login", [RegisterController::class, "login"]); */
 Route::group(['middleware' => 'cors', "prefix" => "v1", "as" => "api."], function () {
     Route::post("register", [RegisterController::class, "register"]);
     Route::post("login", [RegisterController::class, "login"]);
+    Route::post("forgot-password", [RegisterController::class, "forgotPassword"]);
+    Route::post("reset-password", [RegisterController::class, "resetPassword"]);
 });
 
 Route::middleware("auth:api")->group(function () {
