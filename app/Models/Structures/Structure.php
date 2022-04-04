@@ -2,19 +2,19 @@
 
 namespace App\Models\Structures;
 
-use App\Enums\TypeActeur;
 use App\Models\Investissement;
 use App\Models\Pilier;
 use App\Models\RegionIntervention;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
-class Structure extends Model 
+class Structure extends Model
 {
 
     protected $table = "structures";
     public $timestamps = true;
-    protected $fillable = array('type_acteur', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention",  "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable", "specialite","autre_specialite", "categorie_rse");
+    protected $fillable = array('type_acteur', 'source_financement', 'accord_siege', 'adresse_siege', "denomination", "telephone_siege", "autre_secteur_intervention", "paquet_sante_intervention", "mobilisation_ressource", "mis_en_commun_ressource", "achat_service", "email_siege", "latitude", "longitude", "altitude", "prenom_responsable", "nom_responsable", "telephone_responsable", "email_responsable", "fonction_responsable", "specialite", "autre_specialite", "categorie_rse");
+
     /* protected $appends = ["acteur"];
     protected $visible = ["acteur"]; */
 
@@ -25,7 +25,6 @@ class Structure extends Model
         return $query;
     }
 
-    
 
     public function regionInterventions()
     {
@@ -36,6 +35,7 @@ class Structure extends Model
     {
         return $this->hasMany(Investissement::class)->with(['mode_financement', "piliers"]);
     }
+
     public function piliers()
     {
         return $this->hasMany(Pilier::class)->with('axes');
@@ -50,6 +50,7 @@ class Structure extends Model
     {
         return $this->hasOne(Ong::class)->with('sous_recipiandaires');
     }
+
     public function eps()
     {
         return $this->hasOne(Eps::class);
@@ -95,7 +96,5 @@ class Structure extends Model
         return $this->hasOne(SocieteCivile::class);
     }
 
-    
-    
 
 }

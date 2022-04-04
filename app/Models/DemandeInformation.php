@@ -16,4 +16,9 @@ class DemandeInformation extends Model
     protected $dates = ['deleted_at'];
     protected $guarded = array('demande_information_id');
 
+    public function structure()
+    {
+        return $this->belongsTo('App\Models\Structures\Structure');
+    }
+
 }

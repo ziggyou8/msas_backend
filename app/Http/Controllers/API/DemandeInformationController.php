@@ -21,6 +21,11 @@ class DemandeInformationController extends BaseController
         $this->demandeInformationRepository = $demandeInformationRepository;
     }
 
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
     public function index(Request $request)
     {
         $this->validate($request, ['n' => 'nullable|numeric']);
@@ -28,6 +33,10 @@ class DemandeInformationController extends BaseController
         return $this->sendResponse(DemandeInformationRessource::collection($demandes), 'Succés');
     }
 
+    /**
+     * @param DemandeInformationRequest $request
+     * @return \Illuminate\Http\Response
+     */
     public function store(DemandeInformationRequest $request)
     {
         $demande = $this->demandeInformationRepository->store($request->all());
@@ -36,6 +45,10 @@ class DemandeInformationController extends BaseController
         return $this->sendResponse(new DemandeInformationRessource($demande), 'Demande d\'information enregistré avec succés');
     }
 
+    /**
+     * @param $id
+     * @return \Illuminate\Http\Response
+     */
     public function show($id)
     {
         $demande = $this->demandeInformationRepository->getById($id);
