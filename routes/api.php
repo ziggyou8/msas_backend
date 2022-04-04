@@ -113,7 +113,7 @@ Route::middleware("auth:api")->group(function () {
     Route::put("v1/districtes/{id}", [DistricteSanitaireController::class, "update"]);
 
     //Demande d'informations
-    Route::apiResource('v1/demande-informations', DemandeInformationController::class);
+    Route::apiResource('v1/demande-informations', DemandeInformationController::class)->except('store');
     Route::get('v1/demande-informations-profil', [DemandeInformationController::class, 'getProfils']);
     Route::put('v1/demande-informations/{id}/traitee', [DemandeInformationController::class, 'markAsTreated']);
     Route::put('v1/demande-informations/{id}/change-structure', [DemandeInformationController::class, 'changeStructure']);
@@ -121,6 +121,8 @@ Route::middleware("auth:api")->group(function () {
 });
 Route::post("v1/roles", [RoleController::class, "store"]);
 Route::put("v1/roles/{id}", [RoleController::class, "update"]);
+//Demande d'information
+Route::post('v1/demande-informations', [DemandeInformationController::class, 'store']);
 
 /* Route::middleware("auth:api")->get("v1/user", function (Request $request) {
     return $request->user();
