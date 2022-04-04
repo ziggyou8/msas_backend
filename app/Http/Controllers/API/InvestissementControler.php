@@ -69,8 +69,8 @@ class InvestissementControler extends BaseController
         
         function getStatutRejection (){
             $statuts =[
-                "Admin_DPRS" => "En attente de validation",
-                "Admin_structure" => "Enregistrer",               
+                "Admin_DPRS" => "Rejet DPRS",
+                "Admin_structure" => "Rejet Structure",               
             ];
             return $statuts[Auth::user()->roles[0]->name];
         }
