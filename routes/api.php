@@ -116,6 +116,7 @@ Route::middleware("auth:api")->group(function () {
     Route::apiResource('v1/demande-informations', DemandeInformationController::class)->except('store');
     Route::get('v1/demande-informations-profil', [DemandeInformationController::class, 'getProfils']);
     Route::put('v1/demande-informations/{id}/traitee', [DemandeInformationController::class, 'markAsTreated']);
+    Route::put('v1/demande-informations/{id}/non-traitee', [DemandeInformationController::class, 'markAsNoTreated']);
     Route::put('v1/demande-informations/{id}/change-structure', [DemandeInformationController::class, 'changeStructure']);
 
 });

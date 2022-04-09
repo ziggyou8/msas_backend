@@ -19,7 +19,7 @@ class DemandeInformationRepository extends ResourceRepository
         return Profil::toSelectArray();
     }
 
-    public function markAsTreated($id, $inputs)
+    public function changeStatus($id, $inputs)
     {
         $demande = $this->getById($id);
         $demande->traitee_par = $inputs['user_id'];

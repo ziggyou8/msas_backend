@@ -74,7 +74,7 @@ class DemandeInformationController extends BaseController
 
     public function markAsTreated($id)
     {
-        $result = $this->demandeInformationRepository->markAsTreated($id, [
+        $result = $this->demandeInformationRepository->changeStatus($id, [
             'user_id' => Auth::user()->id ?? null,
             'date_traitement' => Date::now(),
             'etat' => EtatDemandeInformation::Traitee
@@ -82,6 +82,19 @@ class DemandeInformationController extends BaseController
 
         if ($result)
             return $this->sendResponse([], "Demande d'information traitée avec succés.");
+        return $this->sendError('Erreur lors du traitement');
+    }
+
+    public function markAsNoTreated($id)
+    {
+        $result = $this->demandeInformationRepository->changeStatus($id, [
+            'user_id' => Auth::user()->id ?? null,
+            'date_traitement' => null,
+            'etat' => EtatDemandeInformation::NonTraitee
+        ]);
+
+        if ($result)
+            return $this->sendResponse([], "Etat de la demande d'information changé avec succés");
         return $this->sendError('Erreur lors du traitement');
     }
 
