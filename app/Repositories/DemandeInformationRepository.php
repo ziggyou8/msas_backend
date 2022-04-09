@@ -19,6 +19,11 @@ class DemandeInformationRepository extends ResourceRepository
         return Profil::toSelectArray();
     }
 
+    public function getPaginateByStructure($idStructure, $n)
+    {
+        return $this->model->where('structure_id', $idStructure)->paginate($n);
+    }
+
     public function changeStatus($id, $inputs)
     {
         $demande = $this->getById($id);

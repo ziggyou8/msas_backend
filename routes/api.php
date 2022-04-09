@@ -118,6 +118,7 @@ Route::middleware("auth:api")->group(function () {
     Route::put('v1/demande-informations/{id}/traitee', [DemandeInformationController::class, 'markAsTreated']);
     Route::put('v1/demande-informations/{id}/non-traitee', [DemandeInformationController::class, 'markAsNoTreated']);
     Route::put('v1/demande-informations/{id}/change-structure', [DemandeInformationController::class, 'changeStructure']);
+    Route::get('v1/demande-informations-structure/{idStructure}', [DemandeInformationController::class, 'getByStructure']);
 
 });
 Route::post("v1/roles", [RoleController::class, "store"]);

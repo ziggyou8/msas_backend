@@ -108,4 +108,17 @@ class DemandeInformationController extends BaseController
             return $this->sendResponse([], "Structure attribuée avec succés.");
         return $this->sendError('Erreur lors du changement de structure');
     }
+
+    /**
+     * @param Request $request
+     * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Validation\ValidationException
+     */
+    public function getByStructure(Request $request, $idStructure)
+    {
+        $this->validate($request, ['n' => 'nullable|numeric']);
+        $demandes = $this->demandeInformationRepository->getPaginateByStructure($idStructure, $request->get('n') ?? self::ITEM_LIMIT);
+        return $this->sendResponse(DemandeInformationRessource::collection($demandes), 'Succés');
+    }
+
 }
