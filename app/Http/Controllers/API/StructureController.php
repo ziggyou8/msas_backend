@@ -21,6 +21,7 @@ use App\Utils\UploadUtil;
 use App\Enums\TypeUpload;
 use App\Models\AxeIntervention;
 use App\Models\DistrictIntervention;
+use App\Models\Document;
 use App\Models\Investissement;
 use App\Models\ModeFinancement;
 use App\Models\NatureInvestissement;
@@ -231,9 +232,6 @@ class StructureController extends BaseController
 
     public function storeStepTwo(Request $request)
     {
-
-        
-     //return json_decode($request->piliers[0])->axe[0]->investissement;
        
 
         function getStatut (){
@@ -264,12 +262,26 @@ class StructureController extends BaseController
         Auth::user()->roles[0]->name;
         $roes=[];
         //capture les infos sur la deuxième phase
+
+
         $investissement = Investissement::create([
             "annee" => $request->annee,
             "monnaie" => $request->monnaie,
             "statut" => getStatut(),
             "structure_id" => $structure->id
         ]);
+
+        foreach ($request->documents as $doc) {
+            $currentDoc = json_decode($doc);
+            if($currentDoc->file){
+                Document::create([
+                    "file"=>$currentDoc->file,
+                    "description"=>$currentDoc->description,
+                    "investissement_id"=> $investissement->id
+                ]);
+            }
+        }
+
 
         //Mode de fiance lié à investissement
         foreach ($request->mode_finance as $mode) {
