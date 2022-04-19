@@ -22,6 +22,10 @@ class Investissement extends Model
     {
         return $this->hasMany(Commentaire::class);
     }
+    public function documents()
+    {
+        return $this->hasMany(Document::class);
+    }
 
     public function last_comment()
     {
