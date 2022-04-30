@@ -32,7 +32,7 @@ class CreateStructuresTable extends Migration {
 			$table->string("fonction_responsable")->nullable();
 			//new fields 30/04/22
 			$table->longText("accord_siege")->nullabble();
-			$table->string("date-debut_intervention")->nullabble();
+			$table->string("date_debut_intervention")->nullabble();
 			$table->string("date_fin_intervention")->nullabble();
 			$table->timestamps();
 		});

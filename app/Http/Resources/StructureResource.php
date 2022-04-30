@@ -42,7 +42,7 @@ class StructureResource extends JsonResource
             "fonction_responsable"=>$this->fonction_responsable,
             "investissements"=>$this->investissements,
             "accord_siege"=>$this->accord_siege,
-            "debut_intervention"=>$this->debut_intervention,
+            "date_debut_intervention"=>$this->debut_intervention,
             "date_fin_intervention"=>$this->date_fin_intervention,
 
         ];
