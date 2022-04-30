@@ -19,6 +19,11 @@ class CreateInvestissementsTable extends Migration
             $table->string("monnaie");
 			$table->string("statut")->nullable();
 			$table->integer("structure_id")->unsigned()->nullable();
+            //new fields added 30/04/22
+			$table->string("agent_execution")->nullable();
+			$table->string("bailleur")->nullable();
+			$table->string("montant_global")->nullable();
+            
             $table->timestamps();
         });
     }

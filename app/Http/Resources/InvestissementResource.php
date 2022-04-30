@@ -25,7 +25,10 @@ class InvestissementResource extends JsonResource
             "statut"=> $this->statut,
             "piliers"=> $this->piliers,
             "mode_financement"=>$this->mode_financement,
-            'structure'=>$this->structure
+            'structure'=>$this->structure,
+            "agent_execution"=>$this->agent_execution,
+            "bailleur"=>$this->bailleur,
+            "montant_global"=>$this->montant_global,
 
         ];
     }

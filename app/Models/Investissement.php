@@ -11,7 +11,7 @@ class Investissement extends Model
     use HasFactory;
     protected $table = "investissements";
     public $timestamps = true;
-    protected $fillable = array("structure_id","annee", "monnaie", "statut");
+    protected $fillable = array("structure_id","annee", "monnaie", "statut", "agent_execution", "bailleur", "montant_global");
 
     public function mode_financement()
     {
