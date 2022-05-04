@@ -14,13 +14,12 @@ class Structure extends Model
     protected $table = "structures";
     public $timestamps = true;
     protected $fillable = array(
-           'type_acteur', 
-           'accord_siege', 
-           'date_debut_intervention', 
-           'date_debut_intervention', 
-           'source_financement', 
-           'accord_siege', 
-           'adresse_siege', 
+           "type_acteur",  
+           "date_debut_intervention", 
+           "date_debut_intervention", 
+           "source_financement", 
+           "accord_siege", 
+           "adresse_siege", 
            "denomination", 
            "telephone_siege", 
            "autre_secteur_intervention", 

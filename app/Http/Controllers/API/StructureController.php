@@ -133,9 +133,9 @@ class StructureController extends BaseController
     public function storeStepOne(Request $request)
     {
         /* return $request->all(); */
-       /*  DB::beginTransaction();
+        DB::beginTransaction();
         $success = false;
-        try { */
+        try {
         $firstStepInputs["denomination"] = $request->denomination;
         $firstStepInputs["categorie_rse"] = $request->categorie_rse;
         $firstStepInputs["type_acteur"] = $request->type_acteur;
@@ -151,9 +151,9 @@ class StructureController extends BaseController
         $firstStepInputs["telephone_responsable"]=$request->telephone_responsable;
         $firstStepInputs["email_responsable"]=$request->email_responsable;
         //new fields added 30/04/22
-        /* $firstStepInputs["accord_siege"] = $request->accord_siege;
+        $firstStepInputs["accord_siege"] = $request->accord_siege;
         $firstStepInputs["date-debut_intervention"] = $request->date_debut_intervention;
-        $firstStepInputs["date_fin_intervention"] = $request->date_fin_intervention; */
+        $firstStepInputs["date_fin_intervention"] = $request->date_fin_intervention;
 
         $structure = $this->structureRepository->store($firstStepInputs);
 
@@ -227,11 +227,11 @@ class StructureController extends BaseController
                 DB::commit();
             }
         return $this->sendResponse(new StructureResource($structure), "Ajouté avec succés.");
-        /* } catch (\Exception $e) {
+        } catch (\Exception $e) {
             DB::rollback();
 		    $success = false;
-            return $this->sendError("Erreur! Réessayez svp");
-        } */
+            return $this->sendError($e->getMessage());
+        }
     }
 
 
@@ -275,7 +275,8 @@ class StructureController extends BaseController
             "structure_id" => $structure->id,
             //new fields added 30/04/22
             "agent_execution" => $request->agent_execution,
-            "bailleur" => $request->bailleur
+            "bailleur" => $request->bailleur,
+            "montant_global" => $request->montant_global
 
         ]);
 
