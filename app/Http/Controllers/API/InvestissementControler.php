@@ -52,7 +52,7 @@ class InvestissementControler extends BaseController
                 "Directeur_EPS" => "Valider",
                 "Point_focal" => "En attente de validation",
             ];
-            return $statuts[Auth::user()->roles[0]->name];
+            return Auth::user()->roles[0]->name == "Admin_structure" && Auth::user()->structure->source_financement == "EPS" ? "En attente de validation EPS":  $statuts[Auth::user()->roles[0]->name];
         }
 
         $investissement = Investissement::find($id);
