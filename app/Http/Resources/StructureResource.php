@@ -41,6 +41,10 @@ class StructureResource extends JsonResource
             "telephone_responsable"=>$this->telephone_responsable,
             "fonction_responsable"=>$this->fonction_responsable,
             "investissements"=>$this->investissements,
+            "accord_siege"=>$this->accord_siege,
+            "date_debut_intervention"=>$this->debut_intervention,
+            "date_fin_intervention"=>$this->date_fin_intervention,
+
         ];
     }
 }

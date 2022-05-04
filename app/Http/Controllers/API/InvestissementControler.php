@@ -48,10 +48,11 @@ class InvestissementControler extends BaseController
         function getStatutValidation (){
             $statuts =[
                 "Admin_DPRS" => "Valider",
-                "Admin_structure" => "Prévalider",
+                "Admin_structure" => "Valider",
+                "Directeur_EPS" => "Valider",
                 "Point_focal" => "En attente de validation",
             ];
-            return $statuts[Auth::user()->roles[0]->name];
+            return Auth::user()->roles[0]->name == "Admin_structure" && Auth::user()->structure->source_financement == "EPS" ? "En attente de validation EPS":  $statuts[Auth::user()->roles[0]->name];
         }
 
         $investissement = Investissement::find($id);
@@ -70,6 +71,7 @@ class InvestissementControler extends BaseController
         function getStatutRejection (){
             $statuts =[
                 "Admin_DPRS" => "Rejet DPRS",
+                "Directeur_EPS" => "Rejet DPRS",
                 "Admin_structure" => "Rejet Structure",               
             ];
             return $statuts[Auth::user()->roles[0]->name];

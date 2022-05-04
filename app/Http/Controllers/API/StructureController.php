@@ -132,6 +132,7 @@ class StructureController extends BaseController
 
     public function storeStepOne(Request $request)
     {
+        /* return $request->all(); */
         DB::beginTransaction();
         $success = false;
         try {
@@ -140,9 +141,8 @@ class StructureController extends BaseController
         $firstStepInputs["type_acteur"] = $request->type_acteur;
         $firstStepInputs["specialite"] = $request->specialite;
         $firstStepInputs["autre_specialite"] = $request->autre_specialite;
-        $firstStepInputs["source_financement"]=$request->source_financement;
-        $firstStepInputs["telephone_siege"]=$request->telephone_siege;
-        $firstStepInputs["email_siege"]=$request->email_siege;
+        $firstStepInputs["source_financement"] = $request->source_financement;
+        $firstStepInputs["email_siege"] = $request->email_siege;
         $firstStepInputs["adresse_siege"] = $request->adresse_siege;
         $firstStepInputs["telephone_siege"] = $request->telephone_siege;
         $firstStepInputs["prenom_responsable"]=$request->prenom_responsable;
@@ -150,6 +150,11 @@ class StructureController extends BaseController
         $firstStepInputs["nom_responsable"]=$request->nom_responsable;
         $firstStepInputs["telephone_responsable"]=$request->telephone_responsable;
         $firstStepInputs["email_responsable"]=$request->email_responsable;
+        //new fields added 30/04/22
+        $firstStepInputs["accord_siege"] = $request->accord_siege;
+        $firstStepInputs["date-debut_intervention"] = $request->date_debut_intervention;
+        $firstStepInputs["date_fin_intervention"] = $request->date_fin_intervention;
+
         $structure = $this->structureRepository->store($firstStepInputs);
 
         try {
@@ -225,7 +230,7 @@ class StructureController extends BaseController
         } catch (\Exception $e) {
             DB::rollback();
 		    $success = false;
-            return $this->sendError("Erreur! Réessayez svp");
+            return $this->sendError($e->getMessage());
         }
     }
 
@@ -233,7 +238,6 @@ class StructureController extends BaseController
     public function storeStepTwo(Request $request)
     {
        
-
         function getStatut (){
             $statuts =[
                 "Admin_structure" => "En attente de validation",
@@ -268,7 +272,12 @@ class StructureController extends BaseController
             "annee" => $request->annee,
             "monnaie" => $request->monnaie,
             "statut" => getStatut(),
-            "structure_id" => $structure->id
+            "structure_id" => $structure->id,
+            //new fields added 30/04/22
+            "agent_execution" => $request->agent_execution,
+            "bailleur" => $request->bailleur,
+            "montant_global" => $request->montant_global
+
         ]);
 
         foreach ($request->documents as $doc) {
